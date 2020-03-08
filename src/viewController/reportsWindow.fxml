@@ -23,10 +23,10 @@ TODO
     <Label text="Number of Appointment Types by Month" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
     <Button text="Generate" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
 
-    <Label text="Number of Appointment Types by Month" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+    <Label text="Schedule for each consultant" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
     <Button text="Generate" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
 
-    <Label text="Number of Appointment Types by Month" GridPane.columnIndex="0" GridPane.rowIndex="2"/>
+    <Label text="Some other test" GridPane.columnIndex="0" GridPane.rowIndex="2"/>
     <Button text="Generate" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
 
 </GridPane>

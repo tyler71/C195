@@ -13,8 +13,10 @@ public interface IDataSource {
     Customer getCustomer(int customerID);
     List<Customer> getAllCustomers();
 
-    int addAppointment(SimpleDateFormat appointmentDate, String appointmentType, int customerID, int consultantID);
-    boolean updateAppointment(int appointmentID, SimpleDateFormat appointmentDate, String appointmentType, int customerID, int consultantID);
+    int addAppointment(SimpleDateFormat appointmentDate, double appointmentDurationMinutes,
+                       String appointmentType, int customerID, int consultantID);
+    boolean updateAppointment(int appointmentID, SimpleDateFormat appointmentDate, double appointmentDurationMinutes,
+                              String appointmentType, int customerID, int consultantID);
     boolean deleteAppointment(int appointmentID);
     Appointment getAppointment(int appointmentID);
     List<Appointment> getAllAppointments();

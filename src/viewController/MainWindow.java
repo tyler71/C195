@@ -11,14 +11,22 @@ import java.io.IOException;
 public class MainWindow {
     @FXML
     private TableView appointmentView;
+
+    @FXML
+    private CheckBox enableLoggingCheck;
+    @FXML
+    private CheckBox calendarMonthViewCheck;
+
     @FXML
     private TextField consultantIDField;
     @FXML
     private DatePicker consultantAppointmentDate;
     @FXML
-    private Button consultantAppointmentTimeHour;
+    private TextField consultantAppointmentTimeHour;
     @FXML
-    private Button consultantAppointmentTimeMinute;
+    private TextField consultantAppointmentTimeMinute;
+    @FXML
+    private TextField consultantAppointmentDuration;
     @FXML
     private RadioButton businessRadio;
     @FXML
@@ -26,9 +34,7 @@ public class MainWindow {
     @FXML
     private TextField customerIDField;
     @FXML
-    private CheckBox enableLoggingCheck;
-    @FXML
-    private CheckBox calendarMonthViewCheck;
+    private TextArea consultantAppointmentDescription;
 
     @FXML
     private BorderPane mainWindow;
@@ -54,6 +60,20 @@ public class MainWindow {
         dialog.setTitle("Customer Records");
         FXMLLoader fxmlLoader = new FXMLLoader();
         fxmlLoader.setLocation(getClass().getResource("customerRecords.fxml"));
+        dialog.getDialogPane().setContent(fxmlLoader.load());
+
+        ButtonType closeButton = new ButtonType("Exit", ButtonBar.ButtonData.CANCEL_CLOSE);
+        dialog.getDialogPane().getButtonTypes().add(closeButton);
+        dialog.showAndWait();
+    }
+
+    @FXML
+    private void loadReportDialog() throws IOException {
+        Dialog<BorderPane> dialog = new Dialog<>();
+
+        dialog.setTitle("Customer Records");
+        FXMLLoader fxmlLoader = new FXMLLoader();
+        fxmlLoader.setLocation(getClass().getResource("reportsWindow.fxml"));
         dialog.getDialogPane().setContent(fxmlLoader.load());
 
         ButtonType closeButton = new ButtonType("Exit", ButtonBar.ButtonData.CANCEL_CLOSE);
