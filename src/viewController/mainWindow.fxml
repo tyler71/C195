@@ -28,17 +28,27 @@ TODO
             fx:controller="viewController.MainWindow"
             prefHeight="400.0" prefWidth="700.0">
     <center>
-        <TableView fx:id="appointmentView">
-            <columns>
-                <TableColumn text="Name"/>
-                <TableColumn text="Type"/>
-                <TableColumn text="Date"/>
-                <TableColumn text="Time"/>
-            </columns>
-        </TableView>
+        <VBox>
+            <TableView fx:id="appointmentView">
+                <columns>
+                    <TableColumn text="Name"/>
+                    <TableColumn text="Type"/>
+                    <TableColumn text="Date"/>
+                    <TableColumn text="Time"/>
+                </columns>
+            </TableView>
+            <Button text="Delete" onAction="#deleteAppointment"/>
+        </VBox>
     </center>
     <right>
         <VBox spacing="8">
+            <HBox>
+                <fx:define>
+                    <ToggleGroup fx:id="addUpdateToggle"/>
+                </fx:define>
+                <RadioButton fx:id="radioAddAppointment" text="Add" toggleGroup="$addUpdateToggle" selected="true"/>
+                <RadioButton fx:id="radioUpdateAppointment" text="Update" toggleGroup="$addUpdateToggle"/>
+            </HBox>
             <HBox>
                 <Label text="Consultant ID"/>
                 <TextField fx:id="consultantIDField"/>
@@ -74,11 +84,6 @@ TODO
             </VBox>
             <Label text="Description"/>
             <TextArea fx:id="consultantAppointmentDescription" prefWidth="30"/>
-            <HBox spacing="3">
-                <Button text="Add" onAction="#addAppointment"/>
-                <Button text="Update" onAction="#updateAppointment"/>
-                <Button text="Delete" onAction="#deleteAppointment"/>
-            </HBox>
         </VBox>
     </right>
     <top>
