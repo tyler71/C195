@@ -29,7 +29,7 @@ TODO
             prefHeight="400.0" prefWidth="700.0">
     <center>
         <VBox>
-            <TableView fx:id="appointmentView">
+            <TableView fx:id="appointmentView" onMouseClicked="#handleSelectCustomerRecord">
                 <columns>
                     <TableColumn text="Name"/>
                     <TableColumn text="Type"/>
@@ -47,7 +47,7 @@ TODO
                     <ToggleGroup fx:id="addUpdateToggle"/>
                 </fx:define>
                 <RadioButton fx:id="radioAddAppointment" text="Add" toggleGroup="$addUpdateToggle" selected="true"/>
-                <RadioButton fx:id="radioUpdateAppointment" text="Update" toggleGroup="$addUpdateToggle"/>
+                <RadioButton fx:id="radioUpdateAppointment" text="Update" toggleGroup="$addUpdateToggle" onAction="#populateUpdateFields"/>
             </HBox>
             <HBox>
                 <Label text="Consultant ID"/>
@@ -84,6 +84,7 @@ TODO
             </VBox>
             <Label text="Description"/>
             <TextArea fx:id="consultantAppointmentDescription" prefWidth="30"/>
+            <Button text="Save" onAction="#handleSave"/>
         </VBox>
     </right>
     <top>

@@ -1,6 +1,7 @@
 package viewController;
 
 import dataModel.Appointment;
+import dataModel.Customer;
 import dataModel.DataSource;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -23,6 +24,9 @@ public class MainWindow {
     private CheckBox enableLoggingCheck;
     @FXML
     private CheckBox calendarMonthViewCheck;
+
+    @FXML
+    public RadioButton radioUpdateAppointment;
 
     @FXML
     private TextField consultantIDField;
@@ -101,5 +105,28 @@ public class MainWindow {
         ButtonType closeButton = new ButtonType("Exit", ButtonBar.ButtonData.CANCEL_CLOSE);
         dialog.getDialogPane().getButtonTypes().add(closeButton);
         dialog.showAndWait();
+    }
+
+    @FXML
+    private void handleSave() {
+        
+    }
+
+    @FXML
+    private void handleSelectCustomerRecord() {
+        if(appointmentView.getSelectionModel().getSelectedItem() != null)
+            radioUpdateAppointment.fire();
+//        runs populateUpdateFields
+    }
+
+    @FXML
+    private void populateUpdateFields() {
+        try{
+            Appointment selectedAppointment = appointmentView.getSelectionModel().getSelectedItem();
+            int appointmentID = selectedAppointment.get_id();
+            Appointment retrievedAppointment = DataSource.getDb().getAppointment(appointmentID);
+        } catch (NullPointerException e) {
+            System.out.println("No Customer Records available");
+        }
     }
 }
