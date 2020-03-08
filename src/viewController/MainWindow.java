@@ -81,26 +81,20 @@ public class MainWindow {
 
     @FXML
     private void loadCustomerDialog() throws IOException {
-        Dialog<BorderPane> dialog = new Dialog<>();
-//        TODO Figure out why initOwner broken
-//        dialog.initOwner(mainWindow.getScene().getWindow());
-        dialog.setTitle("Customer Records");
-        FXMLLoader fxmlLoader = new FXMLLoader();
-        fxmlLoader.setLocation(getClass().getResource("customerRecords.fxml"));
-        dialog.getDialogPane().setContent(fxmlLoader.load());
-
-        ButtonType closeButton = new ButtonType("Exit", ButtonBar.ButtonData.CANCEL_CLOSE);
-        dialog.getDialogPane().getButtonTypes().add(closeButton);
-        dialog.showAndWait();
+        loadDialog("Customer Records", "customerRecords.fxml");
     }
 
     @FXML
     private void loadReportDialog() throws IOException {
+        loadDialog("Reports", "reportsWindow.fxml");
+    }
+
+    private void loadDialog(String title, String fmxlFile) throws IOException {
         Dialog<BorderPane> dialog = new Dialog<>();
 
-        dialog.setTitle("Customer Records");
+        dialog.setTitle(title);
         FXMLLoader fxmlLoader = new FXMLLoader();
-        fxmlLoader.setLocation(getClass().getResource("reportsWindow.fxml"));
+        fxmlLoader.setLocation(getClass().getResource(fmxlFile));
         dialog.getDialogPane().setContent(fxmlLoader.load());
 
         ButtonType closeButton = new ButtonType("Exit", ButtonBar.ButtonData.CANCEL_CLOSE);
@@ -112,24 +106,29 @@ public class MainWindow {
     private void handleSave() {
 //        TODO Logic for Datetime
 //        TODO Logic for appointment type
-        int appointmentID;
-        SimpleDateFormat appointmentDate = new SimpleDateFormat();
-        double appointmentDuration = Integer.parseInt(consultantAppointmentDuration.getText());
-        String appointmentType = "";
-        int customerID = Integer.parseInt(customerIDField.getText());
-        int consultantID = Integer.parseInt(consultantIDField.getText());
+        try {
+            int appointmentID;
+            SimpleDateFormat appointmentDate = new SimpleDateFormat();
+            double appointmentDuration = Integer.parseInt(consultantAppointmentDuration.getText());
+            String appointmentType = "";
+            int customerID = Integer.parseInt(customerIDField.getText());
+            int consultantID = Integer.parseInt(consultantIDField.getText());
 
-        RadioButton selectedAddUpdateRadioButton = (RadioButton) addUpdateToggle.getSelectedToggle();
-        String selectedRadio = selectedAddUpdateRadioButton.getId();
-        if(selectedRadio.equals("radioAddAppointment")) {
-            DataSource.getDb().addAppointment(appointmentDate, appointmentDuration,
-                    appointmentType, customerID, consultantID);
-        } else if (selectedRadio.equals("radioUpdateAppointment")) {
-            appointmentID = appointmentView.getSelectionModel().getSelectedItem().get_id();
-            DataSource.getDb().updateAppointment(appointmentID, appointmentDate, appointmentDuration,
-                    appointmentType, customerID, consultantID);
+            RadioButton selectedAddUpdateRadioButton = (RadioButton) addUpdateToggle.getSelectedToggle();
+            String selectedRadio = selectedAddUpdateRadioButton.getId();
+            if(selectedRadio.equals("radioAddAppointment")) {
+                DataSource.getDb().addAppointment(appointmentDate, appointmentDuration,
+                        appointmentType, customerID, consultantID);
+            } else if (selectedRadio.equals("radioUpdateAppointment")) {
+                appointmentID = appointmentView.getSelectionModel().getSelectedItem().get_id();
+                DataSource.getDb().updateAppointment(appointmentID, appointmentDate, appointmentDuration,
+                        appointmentType, customerID, consultantID);
 
+            }
+        } catch (NumberFormatException e) {
+            System.out.println("Invalid input");
         }
+
     }
 
     @FXML
