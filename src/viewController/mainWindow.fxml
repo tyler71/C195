@@ -32,7 +32,7 @@ TODO
             fx:controller="viewController.MainWindow"
             prefHeight="400.0" prefWidth="700.0">
     <center>
-        <TableView>
+        <TableView fx:id="appointmentView">
             <columns>
                 <TableColumn text="Name"/>
                 <TableColumn text="Type"/>
@@ -45,20 +45,23 @@ TODO
         <VBox spacing="8">
             <HBox>
                 <Label text="Consultant ID"/>
-                <TextField/>
+                <TextField fx:id="consultantIDField"/>
             </HBox>
             <HBox>
                 <Label text="Appointment Time"/>
-                <DatePicker/>
+                <DatePicker fx:id="consultantAppointmentDate"/>
             </HBox>
             <HBox>
                 <Label text="Appointment Type"/>
-                <RadioButton text="Business"/>
-                <RadioButton text="Personal"/>
+                <fx:define>
+                    <ToggleGroup fx:id="appointmentTypeToggle"/>
+                </fx:define>
+                <RadioButton text="Business" toggleGroup="$appointmentTypeToggle" fx:id="businessRadio" selected="true"/>
+                <RadioButton text="Personal" toggleGroup="$appointmentTypeToggle" fx:id="PersonalRadio" />
             </HBox>
             <HBox>
                 <Label text="Customer ID"/>
-                <TextField/>
+                <TextField fx:id="customerIDField"/>
             </HBox>
         </VBox>
     </right>
@@ -66,16 +69,16 @@ TODO
         <BorderPane>
             <left>
                 <HBox spacing="3">
-                    <Button text="Add"/>
-                    <Button text="Update"/>
-                    <Button text="Delete"/>
-                    <CheckBox text="View by Month"/>
+                    <Button text="Add" onAction="#addAppointment"/>
+                    <Button text="Update" onAction="#updateAppointment"/>
+                    <Button text="Delete" onAction="#deleteAppointment"/>
+                    <CheckBox text="View by Month" fx:id="calendarMonthViewCheck"/>
                 </HBox>
             </left>
             <right>
                 <HBox spacing="5">
                     <Button text="Reports"/>
-                    <CheckBox text="Enable Logging"/>
+                    <CheckBox text="Enable Logging" fx:id="enableLoggingCheck"/>
                 </HBox>
             </right>
         </BorderPane>
