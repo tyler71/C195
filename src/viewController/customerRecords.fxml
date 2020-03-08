@@ -17,24 +17,40 @@ TODO Include TableView of Customers
             prefHeight="400.0" prefWidth="600.0">
 
     <left>
-        <TableView fx:id="customerRecordsView">
-            <columns>
-                <TableColumn text="Name"/>
-                <TableColumn text="Address"/>
-                <TableColumn text="Phone Number"/>
-            </columns>
-        </TableView>
+        <VBox>
+            <TableView fx:id="customerRecordsView" onMousePressed="#handleSelectCustomerRecord">
+                <columns>
+                    <TableColumn text="Name"/>
+                    <TableColumn text="Address"/>
+                    <TableColumn text="Phone Number"/>
+                </columns>
+            </TableView>
+            <Button text="Delete"/>
+        </VBox>
     </left>
     <center>
-        <GridPane>
-            <Button text="Add Customer" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
-            <TextField fx:id="addCustomerField" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
-
-            <Button text="Modify Customer" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
-            <TextField fx:id="modifyCustomerField" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
-
-            <Button text="Delete Customer" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
-        </GridPane>
+        <VBox>
+            <HBox>
+                <fx:define>
+                    <ToggleGroup fx:id="addModifyToggle"/>
+                </fx:define>
+                <RadioButton fx:id="radioAddCustomer" text="Add" toggleGroup="$addModifyToggle" selected="true"/>
+                <RadioButton fx:id="radioUpdateCustomer" text="Modify" onAction="#populateUpdateFields" toggleGroup="$addModifyToggle"/>
+            </HBox>
+            <HBox>
+                <Label text="Customer Name"/>
+                <TextField fx:id="customerNameField"/>
+            </HBox>
+            <HBox>
+                <Label text="Customer Address"/>
+                <TextField fx:id="customerAddressField"/>
+            </HBox>
+            <HBox>
+                <Label text="Customer Phone Number"/>
+                <TextField fx:id="customerPhoneNumberField"/>
+            </HBox>
+            <Button text="Save" onAction="#handleSave"/>
+        </VBox>
     </center>
 
 </BorderPane>
