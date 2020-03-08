@@ -5,7 +5,8 @@ public class DataSource {
     private DataSource instance = new DataSource();
 
     private DataSource() {
-        this.db = new DataSourceSourceMySql();
+        db = new DataSourceSourceMySql();
+        db.openConnection();
     }
 
     public static IDataSource getDb() {

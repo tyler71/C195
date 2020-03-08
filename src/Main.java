@@ -1,5 +1,4 @@
-import dataModel.DataSourceSourceMySql;
-import dataModel.IDataSource;
+import dataModel.DataSource;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -15,6 +14,12 @@ public class Main extends Application {
 //        primaryStage.setScene(new Scene(root, 300, 150));
         primaryStage.setScene(new Scene(root, 900, 500));
         primaryStage.show();
+    }
+
+    @Override
+    public void stop() throws Exception {
+        super.stop();
+        DataSource.getDb().closeConnection();
     }
 
     public static void main(String[] args) {
