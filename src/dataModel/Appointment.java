@@ -7,4 +7,5 @@ public class Appointment {
     private String appointmentType;
     private int customerID;
     private int consultantID;
+
 }
