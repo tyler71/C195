@@ -110,16 +110,16 @@ public class MainWindow {
             int appointmentID;
             SimpleDateFormat appointmentDate = new SimpleDateFormat();
             double appointmentDuration = Integer.parseInt(consultantAppointmentDuration.getText());
-            String appointmentType = "";
+            String appointmentType = ((RadioButton) addUpdateToggle.getSelectedToggle()).getText();
             int customerID = Integer.parseInt(customerIDField.getText());
             int consultantID = Integer.parseInt(consultantIDField.getText());
 
             RadioButton selectedAddUpdateRadioButton = (RadioButton) addUpdateToggle.getSelectedToggle();
-            String selectedRadio = selectedAddUpdateRadioButton.getId();
-            if(selectedRadio.equals("radioAddAppointment")) {
+            String selectedRadioAddUpdate = selectedAddUpdateRadioButton.getId();
+            if(selectedRadioAddUpdate.equals("radioAddAppointment")) {
                 DataSource.getDb().addAppointment(appointmentDate, appointmentDuration,
                         appointmentType, customerID, consultantID);
-            } else if (selectedRadio.equals("radioUpdateAppointment")) {
+            } else if (selectedRadioAddUpdate.equals("radioUpdateAppointment")) {
                 appointmentID = appointmentView.getSelectionModel().getSelectedItem().get_id();
                 DataSource.getDb().updateAppointment(appointmentID, appointmentDate, appointmentDuration,
                         appointmentType, customerID, consultantID);

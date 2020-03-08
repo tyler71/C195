@@ -59,7 +59,7 @@ TODO
                     <ToggleGroup fx:id="appointmentTypeToggle"/>
                 </fx:define>
                 <RadioButton text="Business" toggleGroup="$appointmentTypeToggle" fx:id="businessRadio" selected="true"/>
-                <RadioButton text="Personal" toggleGroup="$appointmentTypeToggle" fx:id="PersonalRadio" />
+                <RadioButton text="Personal" toggleGroup="$appointmentTypeToggle" fx:id="personalRadio" />
             </HBox>
             <HBox>
                 <Label text="Customer ID"/>
