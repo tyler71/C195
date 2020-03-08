@@ -12,6 +12,7 @@ import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 public class MainWindow {
@@ -41,9 +42,7 @@ public class MainWindow {
     @FXML
     private TextField consultantAppointmentDuration;
     @FXML
-    private RadioButton businessRadio;
-    @FXML
-    private RadioButton PersonalRadio;
+    private ToggleGroup appointmentTypeToggle;
     @FXML
     private TextField customerIDField;
     @FXML
@@ -111,11 +110,24 @@ public class MainWindow {
 
     @FXML
     private void handleSave() {
+//        TODO Logic for Datetime
+//        TODO Logic for appointment type
+        int appointmentID;
+        SimpleDateFormat appointmentDate = new SimpleDateFormat();
+        double appointmentDuration = Integer.parseInt(consultantAppointmentDuration.getText());
+        String appointmentType = "";
+        int customerID = Integer.parseInt(customerIDField.getText());
+        int consultantID = Integer.parseInt(consultantIDField.getText());
+
         RadioButton selectedAddUpdateRadioButton = (RadioButton) addUpdateToggle.getSelectedToggle();
         String selectedRadio = selectedAddUpdateRadioButton.getId();
         if(selectedRadio.equals("radioAddAppointment")) {
-
+            DataSource.getDb().addAppointment(appointmentDate, appointmentDuration,
+                    appointmentType, customerID, consultantID);
         } else if (selectedRadio.equals("radioUpdateAppointment")) {
+            appointmentID = appointmentView.getSelectionModel().getSelectedItem().get_id();
+            DataSource.getDb().updateAppointment(appointmentID, appointmentDate, appointmentDuration,
+                    appointmentType, customerID, consultantID);
 
         }
     }
