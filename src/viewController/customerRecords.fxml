@@ -14,9 +14,31 @@ TODO Include TableView of Customers
     Include fields name, address and phone number
     -->
 
-<AnchorPane xmlns="http://javafx.com/javafx"
+<BorderPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
             fx:controller="viewController.CustomerRecords"
             prefHeight="400.0" prefWidth="600.0">
 
-</AnchorPane>
+    <left>
+        <TableView>
+            <columns>
+                <TableColumn text="Name"/>
+                <TableColumn text="Address"/>
+                <TableColumn text="Phone Number"/>
+            </columns>
+        </TableView>
+    </left>
+    <center>
+        <GridPane>
+            <Button text="Add Customer" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+            <TextField GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+
+            <Button text="Modify Customer" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+            <TextField GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+
+            <Button text="Delete Customer" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
+
+        </GridPane>
+    </center>
+
+</BorderPane>
