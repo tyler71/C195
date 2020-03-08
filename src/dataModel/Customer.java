@@ -1,11 +1,13 @@
 package dataModel;
 
 public class Customer {
+    private int _id;
     private String name;
     private String address;
     private String phoneNumber;
 
-    public Customer(String name, String address, String phoneNumber) {
+    public Customer(int _id, String name, String address, String phoneNumber) {
+        this._id = _id;
         this.name = name;
         this.address = address;
         this.phoneNumber = phoneNumber;

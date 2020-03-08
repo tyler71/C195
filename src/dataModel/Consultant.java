@@ -1,24 +1,22 @@
 package dataModel;
 
-import java.util.List;
-
 public class Consultant {
-    private int id;
+    private int _id;
     private String name;
     private String password;
 
-    public Consultant(int id, String name, String password) {
-        this.id = id;
+    public Consultant(int _id, String name, String password) {
+        this._id = _id;
         this.name = name;
         this.password = password;
     }
 
-    public int getId() {
-        return id;
+    public int get_id() {
+        return _id;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void set_id(int _id) {
+        this._id = _id;
     }
 
     public String getName() {
