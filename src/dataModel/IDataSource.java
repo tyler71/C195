@@ -5,6 +5,9 @@ import java.util.List;
 
 public interface IDataSource {
 
+    boolean openConnection();
+    boolean closeConnection();
+
     Consultant getConsultant(int consultantID);
     boolean validateLogin(String userName, String password);
 

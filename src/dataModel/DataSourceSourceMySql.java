@@ -1,10 +1,47 @@
 package dataModel;
 
+import java.sql.*;
 import java.time.ZonedDateTime;
 import java.util.List;
 
 public class DataSourceSourceMySql implements IDataSource {
+    public static final String CONNECTION_STRING = "jdbc:mysql://localhost:3306/C195";
 
+    public static final String TABLE_USER = "user";
+    public static final String USER_COLUMN_ID = "userId";
+    public static final String USER_COLUMN_USERNAME = "userName";
+    public static final String USER_COLUMN_PASSWORD = "password";
+
+    public static final String GET_CONSULTANT_QUERY_START = String.format(
+            "SELECT %s, %s "
+            + "FROM %s WHERE %s =",
+            USER_COLUMN_USERNAME, USER_COLUMN_PASSWORD,
+            TABLE_USER, USER_COLUMN_ID);
+
+    private Connection conn;
+
+    @Override
+    public boolean openConnection() {
+        try {
+            conn = DriverManager.getConnection(CONNECTION_STRING);
+            return true;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    @Override
+    public boolean closeConnection() {
+        try {
+            if(conn != null)
+                conn.close();
+            return true;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
 
     @Override
     public Consultant getConsultant(int consultantID) {
