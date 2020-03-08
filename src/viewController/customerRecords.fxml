@@ -32,10 +32,10 @@ TODO Include TableView of Customers
         <VBox>
             <HBox>
                 <fx:define>
-                    <ToggleGroup fx:id="addModifyToggle"/>
+                    <ToggleGroup fx:id="addUpdateToggle"/>
                 </fx:define>
-                <RadioButton fx:id="radioAddCustomer" text="Add" toggleGroup="$addModifyToggle" selected="true"/>
-                <RadioButton fx:id="radioUpdateCustomer" text="Modify" onAction="#populateUpdateFields" toggleGroup="$addModifyToggle"/>
+                <RadioButton fx:id="radioAddCustomer" text="Add" toggleGroup="$addUpdateToggle" selected="true"/>
+                <RadioButton fx:id="radioUpdateCustomer" text="Update" onAction="#populateUpdateFields" toggleGroup="$addUpdateToggle"/>
             </HBox>
             <HBox>
                 <Label text="Customer Name"/>

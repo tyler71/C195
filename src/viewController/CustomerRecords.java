@@ -25,7 +25,7 @@ public class CustomerRecords {
     private TextField customerPhoneNumberField;
 
     @FXML
-    private ToggleGroup addModifyToggle;
+    private ToggleGroup addUpdateToggle;
 
     @FXML
     private RadioButton radioAddCustomer;
@@ -74,6 +74,20 @@ public class CustomerRecords {
 
     @FXML
     private void handleSave() {
+        int _id;
+        String customerName = customerNameField.getText();
+        String customerAddress = customerAddressField.getText();
+        String customerPhoneNumber = customerPhoneNumberField.getText();
 
+        RadioButton selectedRadioButton = (RadioButton) addUpdateToggle.getSelectedToggle();
+        String selectedRadio = selectedRadioButton.getText();
+        if(selectedRadio.equals("Add")) {
+            DataSourceSourceMySql.getInstance().addCustomer(customerName, customerAddress, customerPhoneNumber);
+        } else if (selectedRadio.equals("Update")) {
+            try {
+                _id = customerRecordsView.getSelectionModel().getSelectedItem().get_id();
+                DataSourceSourceMySql.getInstance().updateCustomer(_id, customerName, customerAddress, customerPhoneNumber);
+            } catch (NullPointerException ignored) {}
+        }
     }
 }
