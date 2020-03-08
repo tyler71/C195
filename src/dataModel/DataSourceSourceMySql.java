@@ -5,18 +5,13 @@ import java.util.List;
 
 public class DataSourceSourceMySql implements IDataSource {
     @Override
-    public int addConsultants() {
-        return 0;
-    }
-
-    @Override
     public Consultant getConsultant(int consultantID) {
         return null;
     }
 
     @Override
-    public List<Consultant> getAllConsultants() {
-        return null;
+    public boolean validateLogin(String userName, String password) {
+        return false;
     }
 
     @Override
@@ -72,10 +67,5 @@ public class DataSourceSourceMySql implements IDataSource {
     @Override
     public List<Appointment> getConsultantAppointments(int consultantID) {
         return null;
-    }
-
-    @Override
-    public boolean validateLogin(String userName, String password) {
-        return false;
     }
 }
