@@ -1,6 +1,6 @@
 package dataModel;
 
-import java.text.SimpleDateFormat;
+import java.time.ZonedDateTime;
 import java.util.List;
 
 public class DataSourceSourceMySql implements IDataSource {
@@ -42,12 +42,12 @@ public class DataSourceSourceMySql implements IDataSource {
     }
 
     @Override
-    public int addAppointment(SimpleDateFormat appointmentDate, double appointmentDurationMinutes, String appointmentType, int customerID, int consultantID) {
+    public int addAppointment(ZonedDateTime appointmentDate, double appointmentDurationMinutes, String appointmentType, int customerID, int consultantID) {
         return 0;
     }
 
     @Override
-    public boolean updateAppointment(int appointmentID, SimpleDateFormat appointmentDate, double appointmentDurationMinutes, String appointmentType, int customerID, int consultantID) {
+    public boolean updateAppointment(int appointmentID, ZonedDateTime appointmentDate, double appointmentDurationMinutes, String appointmentType, int customerID, int consultantID) {
         return false;
     }
 

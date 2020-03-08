@@ -13,6 +13,7 @@ import javafx.scene.layout.BorderPane;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 
 public class MainWindow {
@@ -108,7 +109,9 @@ public class MainWindow {
 //        TODO Logic for appointment type
         try {
             int appointmentID;
-            SimpleDateFormat appointmentDate = new SimpleDateFormat();
+
+//            ZonedDateTime appointmentDate = ZonedDateTime();
+
             double appointmentDuration = Integer.parseInt(consultantAppointmentDuration.getText());
             String appointmentType = ((RadioButton) addUpdateToggle.getSelectedToggle()).getText();
             int customerID = Integer.parseInt(customerIDField.getText());
@@ -117,12 +120,12 @@ public class MainWindow {
             RadioButton selectedAddUpdateRadioButton = (RadioButton) addUpdateToggle.getSelectedToggle();
             String selectedRadioAddUpdate = selectedAddUpdateRadioButton.getId();
             if(selectedRadioAddUpdate.equals("radioAddAppointment")) {
-                DataSource.getDb().addAppointment(appointmentDate, appointmentDuration,
-                        appointmentType, customerID, consultantID);
+//                DataSource.getDb().addAppointment(appointmentDate, appointmentDuration,
+//                        appointmentType, customerID, consultantID);
             } else if (selectedRadioAddUpdate.equals("radioUpdateAppointment")) {
                 appointmentID = appointmentView.getSelectionModel().getSelectedItem().get_id();
-                DataSource.getDb().updateAppointment(appointmentID, appointmentDate, appointmentDuration,
-                        appointmentType, customerID, consultantID);
+//                DataSource.getDb().updateAppointment(appointmentID, appointmentDate, appointmentDuration,
+//                        appointmentType, customerID, consultantID);
 
             }
         } catch (NumberFormatException e) {

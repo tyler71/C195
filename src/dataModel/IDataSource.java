@@ -1,6 +1,6 @@
 package dataModel;
 
-import java.text.SimpleDateFormat;
+import java.time.ZonedDateTime;
 import java.util.List;
 
 public interface IDataSource {
@@ -14,9 +14,9 @@ public interface IDataSource {
     Customer getCustomer(int customerID);
     List<Customer> getAllCustomers();
 
-    int addAppointment(SimpleDateFormat appointmentDate, double appointmentDurationMinutes,
+    int addAppointment(ZonedDateTime appointmentDate, double appointmentDurationMinutes,
                        String appointmentType, int customerID, int consultantID);
-    boolean updateAppointment(int appointmentID, SimpleDateFormat appointmentDate, double appointmentDurationMinutes,
+    boolean updateAppointment(int appointmentID, ZonedDateTime appointmentDate, double appointmentDurationMinutes,
                               String appointmentType, int customerID, int consultantID);
     boolean deleteAppointment(int appointmentID);
     Appointment getAppointment(int appointmentID);

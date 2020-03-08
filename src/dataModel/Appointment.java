@@ -1,15 +1,15 @@
 package dataModel;
 
-import java.text.SimpleDateFormat;
+import java.time.ZonedDateTime;
 
 public class Appointment {
     private int _id;
-    private SimpleDateFormat appointmentDate;
+    private ZonedDateTime appointmentDate;
     private String appointmentType;
     private int customerID;
     private int consultantID;
 
-    public Appointment(int _id, SimpleDateFormat appointmentDate, String appointmentType, int customerID, int consultantID) {
+    public Appointment(int _id, ZonedDateTime appointmentDate, String appointmentType, int customerID, int consultantID) {
         this._id = _id;
         this.appointmentDate = appointmentDate;
         this.appointmentType = appointmentType;
@@ -25,11 +25,11 @@ public class Appointment {
         this._id = _id;
     }
 
-    public SimpleDateFormat getAppointmentDate() {
+    public ZonedDateTime getAppointmentDate() {
         return appointmentDate;
     }
 
-    public void setAppointmentDate(SimpleDateFormat appointmentDate) {
+    public void setAppointmentDate(ZonedDateTime appointmentDate) {
         this.appointmentDate = appointmentDate;
     }
 
