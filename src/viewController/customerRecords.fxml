@@ -6,6 +6,14 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
+<!--
+TODO Include TableView of Customers
+    Ability to Add customer
+    Ability to Update customer
+    Ability to Delete customer
+    Include fields name, address and phone number
+    -->
+
 <AnchorPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
             fx:controller="viewController.CustomerRecords"
