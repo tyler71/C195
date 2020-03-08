@@ -81,10 +81,10 @@ public class CustomerRecords {
         String customerPhoneNumber = customerPhoneNumberField.getText();
 
         RadioButton selectedRadioButton = (RadioButton) addUpdateToggle.getSelectedToggle();
-        String selectedRadio = selectedRadioButton.getText();
-        if(selectedRadio.equals("Add")) {
+        String selectedRadio = selectedRadioButton.getId();
+        if(selectedRadio.equals("radioAddCustomer")) {
             DataSource.getDb().addCustomer(customerName, customerAddress, customerPhoneNumber);
-        } else if (selectedRadio.equals("Update")) {
+        } else if (selectedRadio.equals("radioUpdateCustomer")) {
             try {
                 _id = customerRecordsView.getSelectionModel().getSelectedItem().get_id();
                 DataSource.getDb().updateCustomer(_id, customerName, customerAddress, customerPhoneNumber);

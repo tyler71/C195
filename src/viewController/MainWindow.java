@@ -27,6 +27,8 @@ public class MainWindow {
 
     @FXML
     public RadioButton radioUpdateAppointment;
+    @FXML
+    public ToggleGroup addUpdateToggle;
 
     @FXML
     private TextField consultantIDField;
@@ -109,7 +111,13 @@ public class MainWindow {
 
     @FXML
     private void handleSave() {
-        
+        RadioButton selectedAddUpdateRadioButton = (RadioButton) addUpdateToggle.getSelectedToggle();
+        String selectedRadio = selectedAddUpdateRadioButton.getId();
+        if(selectedRadio.equals("radioAddAppointment")) {
+
+        } else if (selectedRadio.equals("radioUpdateAppointment")) {
+
+        }
     }
 
     @FXML
