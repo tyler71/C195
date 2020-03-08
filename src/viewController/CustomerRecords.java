@@ -56,8 +56,9 @@ public class CustomerRecords {
 
     @FXML
     private void handleSelectCustomerRecord() {
-        radioUpdateCustomer.fire();
-//        run populateUpdateFields
+        if(customerRecordsView.getSelectionModel().getSelectedItem() != null)
+            radioUpdateCustomer.fire();
+//        runs populateUpdateFields
     }
 
     @FXML
@@ -73,6 +74,6 @@ public class CustomerRecords {
 
     @FXML
     private void handleSave() {
-        
+
     }
 }
