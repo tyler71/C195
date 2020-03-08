@@ -4,17 +4,6 @@ import java.text.SimpleDateFormat;
 import java.util.List;
 
 public class DataSourceSourceMySql implements IDataSource {
-
-
-    private DataSourceSourceMySql() {
-//        Empty Constructor
-    };
-    private static DataSourceSourceMySql instance = new DataSourceSourceMySql();
-
-    public static DataSourceSourceMySql getInstance() {
-        return instance;
-    }
-
     @Override
     public Consultant getConsultant(int consultantID) {
         return null;
@@ -77,6 +66,7 @@ public class DataSourceSourceMySql implements IDataSource {
 
     @Override
     public List<Appointment> getConsultantAppointments(int consultantID) {
+//        TODO Use collections filters
         return null;
     }
 }

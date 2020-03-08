@@ -1,7 +1,7 @@
 package viewController;
 
 import dataModel.Appointment;
-import dataModel.DataSourceSourceMySql;
+import dataModel.DataSource;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -49,7 +49,7 @@ public class MainWindow {
     public void initialize() {
         Platform.runLater(() -> {
             try {
-                ArrayList<Appointment> consultantAppointsments = (ArrayList<Appointment>) DataSourceSourceMySql.getInstance().getConsultantAppointments(1);
+                ArrayList<Appointment> consultantAppointsments = (ArrayList<Appointment>) DataSource.getDb().getConsultantAppointments(1);
 //            TODO Removed hard coded consultID, retrieve from login
                 observableAppointments.addAll(consultantAppointsments);
                 appointmentView.setItems(observableAppointments);

@@ -1,6 +1,7 @@
 package viewController;
 
 import dataModel.Customer;
+import dataModel.DataSource;
 import dataModel.DataSourceSourceMySql;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -45,7 +46,7 @@ public class CustomerRecords {
     public void initialize() {
         Platform.runLater(() -> {
             try {
-                ArrayList<Customer> customers = (ArrayList<Customer>) DataSourceSourceMySql.getInstance().getAllCustomers();
+                ArrayList<Customer> customers = (ArrayList<Customer>) DataSource.getDb().getAllCustomers();
                 observableCustomerRecords.addAll(customers);
                 customerRecordsView.setItems(observableCustomerRecords);
             } catch (NullPointerException e) {
@@ -66,7 +67,7 @@ public class CustomerRecords {
         try{
             Customer selectedCustomer = customerRecordsView.getSelectionModel().getSelectedItem();
             int customerID = selectedCustomer.get_id();
-            Customer retrievedCustomer = DataSourceSourceMySql.getInstance().getCustomer(customerID);
+            Customer retrievedCustomer = DataSource.getDb().getCustomer(customerID);
         } catch (NullPointerException e) {
             System.out.println("No Customer Records available");
         }
@@ -82,11 +83,11 @@ public class CustomerRecords {
         RadioButton selectedRadioButton = (RadioButton) addUpdateToggle.getSelectedToggle();
         String selectedRadio = selectedRadioButton.getText();
         if(selectedRadio.equals("Add")) {
-            DataSourceSourceMySql.getInstance().addCustomer(customerName, customerAddress, customerPhoneNumber);
+            DataSource.getDb().addCustomer(customerName, customerAddress, customerPhoneNumber);
         } else if (selectedRadio.equals("Update")) {
             try {
                 _id = customerRecordsView.getSelectionModel().getSelectedItem().get_id();
-                DataSourceSourceMySql.getInstance().updateCustomer(_id, customerName, customerAddress, customerPhoneNumber);
+                DataSource.getDb().updateCustomer(_id, customerName, customerAddress, customerPhoneNumber);
             } catch (NullPointerException ignored) {}
         }
     }

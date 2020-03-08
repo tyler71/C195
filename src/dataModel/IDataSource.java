@@ -4,6 +4,7 @@ import java.text.SimpleDateFormat;
 import java.util.List;
 
 public interface IDataSource {
+
     Consultant getConsultant(int consultantID);
     boolean validateLogin(String userName, String password);
 
