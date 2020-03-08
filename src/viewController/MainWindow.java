@@ -1,16 +1,23 @@
 package viewController;
 
-
+import dataModel.Appointment;
+import dataModel.DataSourceSourceMySql;
+import javafx.application.Platform;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 public class MainWindow {
+    private ObservableList<Appointment> observableAppointments = FXCollections.observableList(new ArrayList<>());
+
     @FXML
-    private TableView appointmentView;
+    private TableView<Appointment> appointmentView;
 
     @FXML
     private CheckBox enableLoggingCheck;
@@ -38,6 +45,16 @@ public class MainWindow {
 
     @FXML
     private BorderPane mainWindow;
+
+    public void initialize() {
+        Platform.runLater(() -> {
+            appointmentView.setItems(observableAppointments);
+            ArrayList<Appointment> consultantAppointsments = (ArrayList<Appointment>) DataSourceSourceMySql.getInstance().getConsultantAppointments(1);
+//            TODO Removed hard coded consultID, retrieve from login
+            observableAppointments.addAll(consultantAppointsments);
+        });
+    }
+
 
 
     @FXML
