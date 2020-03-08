@@ -27,9 +27,58 @@ TODO
 
 <!-- TODO Include Ability to turn on Logging-->
 
-<AnchorPane xmlns="http://javafx.com/javafx"
+<BorderPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
             fx:controller="viewController.MainWindow"
-            prefHeight="400.0" prefWidth="600.0">
+            prefHeight="400.0" prefWidth="700.0">
+    <center>
+        <TableView>
+            <columns>
+                <TableColumn text="Name"/>
+                <TableColumn text="Type"/>
+                <TableColumn text="Date"/>
+                <TableColumn text="Time"/>
+            </columns>
+        </TableView>
+    </center>
+    <right>
+        <VBox spacing="8">
+            <HBox>
+                <Label text="Consultant ID"/>
+                <TextField/>
+            </HBox>
+            <HBox>
+                <Label text="Appointment Time"/>
+                <DatePicker/>
+            </HBox>
+            <HBox>
+                <Label text="Appointment Type"/>
+                <RadioButton text="Business"/>
+                <RadioButton text="Personal"/>
+            </HBox>
+            <HBox>
+                <Label text="Customer ID"/>
+                <TextField/>
+            </HBox>
+        </VBox>
+    </right>
+    <bottom>
+        <BorderPane>
+            <left>
+                <HBox spacing="3">
+                    <Button text="Add"/>
+                    <Button text="Update"/>
+                    <Button text="Delete"/>
+                    <CheckBox text="View by Month"/>
+                </HBox>
+            </left>
+            <right>
+                <HBox spacing="5">
+                    <Button text="Reports"/>
+                    <CheckBox text="Enable Logging"/>
+                </HBox>
+            </right>
+        </BorderPane>
+    </bottom>
 
-</AnchorPane>
+</BorderPane>
