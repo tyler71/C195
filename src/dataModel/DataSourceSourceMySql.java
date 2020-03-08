@@ -4,6 +4,17 @@ import java.text.SimpleDateFormat;
 import java.util.List;
 
 public class DataSourceSourceMySql implements IDataSource {
+
+
+    private DataSourceSourceMySql() {
+//        Empty Constructor
+    };
+    private static DataSourceSourceMySql instance = new DataSourceSourceMySql();
+
+    public static DataSourceSourceMySql getInstance() {
+        return instance;
+    }
+
     @Override
     public Consultant getConsultant(int consultantID) {
         return null;
