@@ -18,6 +18,10 @@ public class DataSourceSourceMySql implements IDataSource {
             USER_COLUMN_USERNAME, USER_COLUMN_PASSWORD,
             TABLE_USER, USER_COLUMN_ID);
 
+    public static final String VALIDATE_LOGIN_QUERY_START = String.format(
+            "SELECT %s, %s FROM %s",
+            USER_COLUMN_USERNAME, USER_COLUMN_PASSWORD, TABLE_USER);
+
     private Connection conn;
 
     @Override
@@ -45,12 +49,37 @@ public class DataSourceSourceMySql implements IDataSource {
 
     @Override
     public Consultant getConsultant(int consultantID) {
-        return null;
+        try(Statement statement = conn.createStatement();
+            ResultSet results = statement.executeQuery(GET_CONSULTANT_QUERY_START)) {
+            int indexConsultantID = 1;
+            int indexConsultantUsername = 2;
+            int indexConsultantPassword = 3;
+            Consultant consultant = new Consultant(results.getInt(indexConsultantID),
+                    results.getString(indexConsultantUsername), results.getString(indexConsultantPassword));
+            return consultant;
+        } catch (SQLException e) {
+            System.out.println("Unable to find Consultant");
+            return null;
+        }
     }
 
     @Override
     public boolean validateLogin(String userName, String password) {
-        return false;
+        try(Statement statement = conn.createStatement();
+        ResultSet results = statement.executeQuery(VALIDATE_LOGIN_QUERY_START)) {
+            int indexConsultantUsername = 1;
+            int indexConsultantPassword = 2;
+            while(results.next()) {
+                if (userName.equals(results.getString(indexConsultantUsername))
+                        && password.equals(results.getString(indexConsultantPassword))) {
+                    return true;
+                }
+            }
+            return false;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 
     @Override
