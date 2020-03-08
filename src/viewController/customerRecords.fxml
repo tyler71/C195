@@ -1,11 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
-
 <!--
 TODO Include TableView of Customers
     Ability to Add customer
@@ -14,13 +8,16 @@ TODO Include TableView of Customers
     Include fields name, address and phone number
     -->
 
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
 <BorderPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
             fx:controller="viewController.CustomerRecords"
             prefHeight="400.0" prefWidth="600.0">
 
     <left>
-        <TableView>
+        <TableView fx:id="customerRecordsView">
             <columns>
                 <TableColumn text="Name"/>
                 <TableColumn text="Address"/>
@@ -31,13 +28,12 @@ TODO Include TableView of Customers
     <center>
         <GridPane>
             <Button text="Add Customer" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
-            <TextField GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+            <TextField fx:id="addCustomerField" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
 
             <Button text="Modify Customer" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
-            <TextField GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+            <TextField fx:id="modifyCustomerField" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
 
             <Button text="Delete Customer" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
-
         </GridPane>
     </center>
 

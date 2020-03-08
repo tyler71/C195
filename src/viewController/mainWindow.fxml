@@ -1,11 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
-
 <!--
 TODO Include TableView Calendar of Appointments
     Ability to view by Month
@@ -27,6 +21,8 @@ TODO
 
 <!-- TODO Include Ability to turn on Logging-->
 
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
 <BorderPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
             fx:controller="viewController.MainWindow"
@@ -48,10 +44,6 @@ TODO
                 <TextField fx:id="consultantIDField"/>
             </HBox>
             <HBox>
-                <Label text="Appointment Time"/>
-                <DatePicker fx:id="consultantAppointmentDate"/>
-            </HBox>
-            <HBox>
                 <Label text="Appointment Type"/>
                 <fx:define>
                     <ToggleGroup fx:id="appointmentTypeToggle"/>
@@ -63,6 +55,19 @@ TODO
                 <Label text="Customer ID"/>
                 <TextField fx:id="customerIDField"/>
             </HBox>
+            <HBox>
+                <Label text="Appointment Date"/>
+                <DatePicker fx:id="consultantAppointmentDate"/>
+            </HBox>
+            <VBox>
+                <Label text="Appointment Time"/>
+                <HBox spacing="3">
+                    <Label text="Hour"/>
+                    <Button fx:id="consultantAppointmentTimeHour"/>
+                    <Label text="Minute"/>
+                    <Button fx:id="consultantAppointmentTimeMinute"/>
+                </HBox>
+            </VBox>
         </VBox>
     </right>
     <bottom>
@@ -77,6 +82,7 @@ TODO
             </left>
             <right>
                 <HBox spacing="5">
+                    <Button text="Customers" onAction="#loadCustomerDialog"/>
                     <Button text="Reports"/>
                     <CheckBox text="Enable Logging" fx:id="enableLoggingCheck"/>
                 </HBox>

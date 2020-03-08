@@ -2,7 +2,11 @@ package viewController;
 
 
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.control.*;
+import javafx.scene.layout.BorderPane;
+
+import java.io.IOException;
 
 public class MainWindow {
     @FXML
@@ -11,6 +15,10 @@ public class MainWindow {
     private TextField consultantIDField;
     @FXML
     private DatePicker consultantAppointmentDate;
+    @FXML
+    private Button consultantAppointmentTimeHour;
+    @FXML
+    private Button consultantAppointmentTimeMinute;
     @FXML
     private RadioButton businessRadio;
     @FXML
@@ -21,6 +29,9 @@ public class MainWindow {
     private CheckBox enableLoggingCheck;
     @FXML
     private CheckBox calendarMonthViewCheck;
+
+    @FXML
+    private BorderPane mainWindow;
 
 
     @FXML
@@ -33,5 +44,20 @@ public class MainWindow {
 
     @FXML
     private void deleteAppointment() {
+    }
+
+    @FXML
+    private void loadCustomerDialog() throws IOException {
+        Dialog<BorderPane> dialog = new Dialog<>();
+//        TODO Figure out why initOwner broken
+//        dialog.initOwner(mainWindow.getScene().getWindow());
+        dialog.setTitle("Customer Records");
+        FXMLLoader fxmlLoader = new FXMLLoader();
+        fxmlLoader.setLocation(getClass().getResource("customerRecords.fxml"));
+        dialog.getDialogPane().setContent(fxmlLoader.load());
+
+        ButtonType closeButton = new ButtonType("Exit", ButtonBar.ButtonData.CANCEL_CLOSE);
+        dialog.getDialogPane().getButtonTypes().add(closeButton);
+        dialog.showAndWait();
     }
 }
