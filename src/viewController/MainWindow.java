@@ -48,10 +48,15 @@ public class MainWindow {
 
     public void initialize() {
         Platform.runLater(() -> {
-            appointmentView.setItems(observableAppointments);
-            ArrayList<Appointment> consultantAppointsments = (ArrayList<Appointment>) DataSourceSourceMySql.getInstance().getConsultantAppointments(1);
+            try {
+                ArrayList<Appointment> consultantAppointsments = (ArrayList<Appointment>) DataSourceSourceMySql.getInstance().getConsultantAppointments(1);
 //            TODO Removed hard coded consultID, retrieve from login
-            observableAppointments.addAll(consultantAppointsments);
+                observableAppointments.addAll(consultantAppointsments);
+                appointmentView.setItems(observableAppointments);
+                appointmentView.getSelectionModel().selectFirst();
+            } catch (NullPointerException e) {
+                System.out.println("No Appointments available");
+            }
         });
     }
 
