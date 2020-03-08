@@ -1,0 +1,1 @@
+SELECT userId from user;

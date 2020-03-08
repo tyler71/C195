@@ -1,3 +1,5 @@
+import dataModel.DataSourceSourceMySql;
+import dataModel.IDataSource;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -8,9 +10,10 @@ public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception{
-        Parent root = FXMLLoader.load(getClass().getResource("viewController/loginWindow.fxml"));
+        Parent root = FXMLLoader.load(getClass().getResource("viewController/mainWindow.fxml"));
         primaryStage.setTitle("Login");
-        primaryStage.setScene(new Scene(root, 300, 150));
+//        primaryStage.setScene(new Scene(root, 300, 150));
+        primaryStage.setScene(new Scene(root, 900, 500));
         primaryStage.show();
     }
 
