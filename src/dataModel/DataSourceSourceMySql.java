@@ -14,20 +14,25 @@ public class DataSourceSourceMySql implements IDataSource {
 
     public static final String GET_CONSULTANT_QUERY_START = String.format(
             "SELECT %s, %s "
-            + "FROM %s WHERE %s =",
+            + "FROM %s WHERE %s = ?",
             USER_COLUMN_USERNAME, USER_COLUMN_PASSWORD,
             TABLE_USER, USER_COLUMN_ID);
 
     public static final String VALIDATE_LOGIN_QUERY_START = String.format(
-            "SELECT %s, %s FROM %s",
-            USER_COLUMN_USERNAME, USER_COLUMN_PASSWORD, TABLE_USER);
+            "SELECT %s, %s FROM %s WHERE %s = ?",
+            USER_COLUMN_USERNAME, USER_COLUMN_PASSWORD, TABLE_USER, USER_COLUMN_USERNAME);
 
     private Connection conn;
+    private PreparedStatement queryGetConsultant;
+    private PreparedStatement queryValidateLogin;
 
     @Override
     public boolean openConnection() {
         try {
             conn = DriverManager.getConnection(CONNECTION_STRING);
+
+            queryGetConsultant = conn.prepareStatement(GET_CONSULTANT_QUERY_START);
+            queryValidateLogin = conn.prepareStatement(VALIDATE_LOGIN_QUERY_START);
             return true;
         } catch (SQLException e) {
             e.printStackTrace();
@@ -49,8 +54,9 @@ public class DataSourceSourceMySql implements IDataSource {
 
     @Override
     public Consultant getConsultant(int consultantID) {
-        try(Statement statement = conn.createStatement();
-            ResultSet results = statement.executeQuery(GET_CONSULTANT_QUERY_START)) {
+        try {
+            queryGetConsultant.setString(1, String.valueOf(consultantID));
+            ResultSet results = queryGetConsultant.executeQuery();
             int indexConsultantID = 1;
             int indexConsultantUsername = 2;
             int indexConsultantPassword = 3;
@@ -65,8 +71,10 @@ public class DataSourceSourceMySql implements IDataSource {
 
     @Override
     public boolean validateLogin(String userName, String password) {
-        try(Statement statement = conn.createStatement();
-        ResultSet results = statement.executeQuery(VALIDATE_LOGIN_QUERY_START)) {
+        try {
+            queryValidateLogin.setString(1, userName);
+            queryValidateLogin.setString(2, password);
+            ResultSet results = queryValidateLogin.executeQuery();
             int indexConsultantUsername = 1;
             int indexConsultantPassword = 2;
             while(results.next()) {
