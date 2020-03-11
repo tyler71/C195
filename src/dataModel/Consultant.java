@@ -1,37 +1,44 @@
 package dataModel;
 
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleStringProperty;
+
 public class Consultant {
-    private int _id;
-    private String name;
-    private String password;
+    private SimpleIntegerProperty _id;
+    private SimpleStringProperty name;
+    private SimpleStringProperty password;
 
     public Consultant(int _id, String name, String password) {
-        this._id = _id;
-        this.name = name;
-        this.password = password;
+        this._id = new SimpleIntegerProperty();
+        this.name = new SimpleStringProperty();
+        this.password = new SimpleStringProperty();
+
+        this._id.set(_id);
+        this.name.set(name);
+        this.password.set(password);
     }
 
     public int get_id() {
-        return _id;
+        return _id.get();
     }
 
     public void set_id(int _id) {
-        this._id = _id;
+        this._id.set(_id);
     }
 
     public String getName() {
-        return name;
+        return name.get();
     }
 
     public void setName(String name) {
-        this.name = name;
+        this.name.set(name);
     }
 
     public String getPassword() {
-        return password;
+        return password.get();
     }
 
     public void setPassword(String password) {
-        this.password = password;
+        this.password.set(password);
     }
 }

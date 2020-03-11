@@ -1,47 +1,55 @@
 package dataModel;
 
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleStringProperty;
+
 public class Customer {
-    private int _id;
-    private String name;
-    private String address;
-    private String phoneNumber;
+    private SimpleIntegerProperty _id;
+    private SimpleStringProperty name;
+    private SimpleStringProperty address;
+    private SimpleStringProperty phoneNumber;
 
     public Customer(int _id, String name, String address, String phoneNumber) {
-        this._id = _id;
-        this.name = name;
-        this.address = address;
-        this.phoneNumber = phoneNumber;
+        this._id = new SimpleIntegerProperty();
+        this.name = new SimpleStringProperty();
+        this.address = new SimpleStringProperty();
+        this.phoneNumber = new SimpleStringProperty();
+
+        this._id.set(_id);
+        this.name.set(name);
+        this.address.set(address);
+        this.phoneNumber.set(phoneNumber);
     }
 
     public String getName() {
-        return name;
+        return name.get();
     }
 
     public void setName(String name) {
-        this.name = name;
+        this.name.set(name);
     }
 
     public String getAddress() {
-        return address;
+        return address.get();
     }
 
     public void setAddress(String address) {
-        this.address = address;
+        this.address.set(address);
     }
 
     public int get_id() {
-        return _id;
+        return _id.get();
     }
 
     public void set_id(int _id) {
-        this._id = _id;
+        this._id.set(_id);
     }
 
     public String getPhoneNumber() {
-        return phoneNumber;
+        return phoneNumber.get();
     }
 
     public void setPhoneNumber(String phoneNumber) {
-        this.phoneNumber = phoneNumber;
+        this.phoneNumber.set(phoneNumber);
     }
 }
