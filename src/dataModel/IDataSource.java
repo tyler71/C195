@@ -11,7 +11,7 @@ public interface IDataSource {
     Consultant getConsultant(int consultantID);
     boolean validateLogin(String userName, String password);
 
-    int addCustomer(String name, String address, String phoneNumber);
+    int addCustomer(Customer customer);
     boolean updateCustomer(int customerID, String name, String address, String phoneNumber);
     boolean deleteCustomer(int customerID);
     Customer getCustomer(int customerID);

@@ -8,12 +8,10 @@ public class Consultant {
     private SimpleStringProperty name;
     private SimpleStringProperty password;
 
-    public Consultant(int _id, String name, String password) {
-        this._id = new SimpleIntegerProperty();
+    public Consultant(String name, String password) {
         this.name = new SimpleStringProperty();
         this.password = new SimpleStringProperty();
 
-        this._id.set(_id);
         this.name.set(name);
         this.password.set(password);
     }
