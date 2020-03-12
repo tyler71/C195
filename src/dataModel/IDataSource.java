@@ -12,7 +12,7 @@ public interface IDataSource {
     boolean validateLogin(String userName, String password);
 
     int addCustomer(Customer customer);
-    boolean updateCustomer(int customerID, String name, String address, String phoneNumber);
+    boolean updateCustomer(int customerID, Customer customer);
     boolean deleteCustomer(int customerID);
     Customer getCustomer(int customerID);
     List<Customer> getAllCustomers();

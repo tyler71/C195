@@ -14,3 +14,27 @@ INSERT INTO address(address, address2, cityId, postalCode, phone,
 INSERT INTO customer(customerName, addressId, active, createDate,
                      createdBy, lastUpdateBy)
                     VALUES('Bob', 1, 1, NOW(), 'Tyler', 'Tyler');
+
+UPDATE country
+    SET country='test',
+        lastUpdateBy='auser'
+    WHERE countryId = 14;
+UPDATE city
+    SET city='new city',
+        countryId=14,
+        lastUpdateBy='auser'
+    WHERE cityId = 4;
+UPDATE address
+    SET address='new address',
+        address2='new second address',
+        cityId='4',
+        postalCode='23532',
+        phone='23523523',
+        lastUpdateBy='auser'
+    WHERE addressId='4';
+UPDATE customer
+    SET customerName='acustomer',
+        addressId=2,
+        active='1',
+        lastUpdateBy='auser'
+    WHERE customerId='4';

@@ -41,6 +41,7 @@ public class DataSourceSourceMySql implements IDataSource {
     public static final String COUNTRY_COLUMN_LAST_UPDATE_BY = "lastUpdateBy";
 
     public static final String TABLE_ADDRESS = "address";
+    public static final String ADDRESS_COLUMN_ID = "addressId";
     public static final String ADDRESS_COLUMN_ADDRESS = "address";
     public static final String ADDRESS_COLUMN_ADDRESS2 = "address2";
     public static final String ADDRESS_COLUMN_CITY_ID = "cityId";
@@ -85,6 +86,26 @@ public class DataSourceSourceMySql implements IDataSource {
             TABLE_CUSTOMER, CUSTOMER_COLUMN_NAME, CUSTOMER_COLUMN_ADDRESS_ID, CUSTOMER_COLUMN_ACTIVE,
             CUSTOMER_COLUMN_CREATE_DATE, CUSTOMER_COLUMN_CREATED_BY, CUSTOMER_COLUMN_LAST_UPDATE_BY);
 
+    public static final String UPDATE_CUSTOMER_COUNTRY = String.format(
+            "UPDATE %s SET %s=?, %s=? WHERE %s = ?",
+            TABLE_COUNTRY, COUNTRY_COLUMN_NAME, COUNTRY_COLUMN_LAST_UPDATE_BY, COUNTRY_COLUMN_ID);
+    public static final String UPDATE_CUSTOMER_CITY = String.format(
+            "UPDATE %s SET %s=?, %s=?, %s=? WHERE %s = ?",
+            TABLE_CITY, CITY_COLUMN_COUNTRY_ID, CITY_COLUMN_LAST_UPDATE_BY, CITY_COLUMN_ID);
+    public static final String UPDATE_CUSTOMER_ADDRESS = String.format(
+            "UPDATE %s SET %s=?, %s=?, %s=?," +
+                    "%s=?, %s=?, %s=?" +
+                "WHERE %s = ?",
+            TABLE_ADDRESS, ADDRESS_COLUMN_ADDRESS, ADDRESS_COLUMN_ADDRESS2, ADDRESS_COLUMN_CITY_ID,
+            ADDRESS_COLUMN_POSTAL_CODE, ADDRESS_COLUMN_PHONE, ADDRESS_COLUMN_LAST_UPDATE_BY,
+            ADDRESS_COLUMN_ID);
+    public static final String UPDATE_CUSTOMER = String.format(
+            "UPDATE %s " +
+                    "SET %s=?, %s=?, %s=?, %s=?" +
+                    "WHERE %s = ?",
+            TABLE_CUSTOMER,
+            CUSTOMER_COLUMN_NAME, CUSTOMER_COLUMN_ADDRESS_ID, CUSTOMER_COLUMN_ACTIVE, CUSTOMER_COLUMN_LAST_UPDATE_BY,
+            CUSTOMER_COLUMN_ID);
 
     private Connection conn;
     private PreparedStatement queryGetConsultant;
@@ -94,6 +115,11 @@ public class DataSourceSourceMySql implements IDataSource {
     private PreparedStatement insertCustomerCity;
     private PreparedStatement insertCustomerAddress;
     private PreparedStatement insertCustomer;
+
+    private PreparedStatement updateCustomerCountry;
+    private PreparedStatement updateCustomerCity;
+    private PreparedStatement updateCustomerAddress;
+    private PreparedStatement updateCustomer;
 
     @Override
     public boolean openConnection() {
@@ -107,6 +133,11 @@ public class DataSourceSourceMySql implements IDataSource {
             insertCustomerCity = conn.prepareStatement(INSERT_CITY_START, Statement.RETURN_GENERATED_KEYS);
             insertCustomerAddress = conn.prepareStatement(INSERT_ADDRESS_START, Statement.RETURN_GENERATED_KEYS);
             insertCustomer = conn.prepareStatement(INSERT_CUSTOMER_START, Statement.RETURN_GENERATED_KEYS);
+
+            updateCustomerCountry = conn.prepareStatement(UPDATE_CUSTOMER_COUNTRY);
+            updateCustomerCity = conn.prepareStatement(UPDATE_CUSTOMER_CITY);
+            updateCustomerAddress = conn.prepareStatement(UPDATE_CUSTOMER_ADDRESS);
+            updateCustomer = conn.prepareStatement(UPDATE_CUSTOMER);
 
             return true;
         } catch (SQLException e) {
@@ -124,7 +155,11 @@ public class DataSourceSourceMySql implements IDataSource {
                     insertCustomerCountry,
                     insertCustomerCity,
                     insertCustomerAddress,
-                    insertCustomer
+                    insertCustomer,
+                    updateCustomerCountry,
+                    updateCustomerCity,
+                    updateCustomerAddress,
+                    updateCustomer
             );
             for (PreparedStatement query : queries) {
                 if(query != null)
@@ -133,7 +168,6 @@ public class DataSourceSourceMySql implements IDataSource {
 
             if(conn != null)
                 conn.close();
-
             return true;
         } catch (SQLException e) {
             e.printStackTrace();
@@ -253,7 +287,7 @@ public class DataSourceSourceMySql implements IDataSource {
     }
 
     @Override
-    public boolean updateCustomer(int customerID, String name, String address, String phoneNumber) {
+    public boolean updateCustomer(int CustomerID, Customer customer) {
         return false;
     }
 
