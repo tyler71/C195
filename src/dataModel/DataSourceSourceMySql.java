@@ -8,6 +8,8 @@ import java.util.List;
 
 public class DataSourceSourceMySql implements IDataSource {
     public static final String CONNECTION_STRING = "jdbc:mysql://localhost:3306/C195";
+    public static final String CONNECTION_USERNAME = "C195";
+    public static final String CONNECTION_PASSWORD = "3O316HGTm9EO1oKW";
 
     public static final String TABLE_USER = "user";
     public static final String USER_COLUMN_ID = "userId";
@@ -60,26 +62,26 @@ public class DataSourceSourceMySql implements IDataSource {
 
 
     public static final String INSERT_COUNTRY_START = String.format(
-            "INSERT INTO %s(%s, %s, %s, %s)" +
-                    "VALUES('?', NOW(), '?', '?')",
-            TABLE_COUNTRY, COUNTRY_COLUMN_CREATE_DATE, COUNTRY_COLUMN_CREATED_BY, COUNTRY_COLUMN_LAST_UPDATE_BY);
+            "INSERT INTO %s(%s, %s, %s, %s) " +
+                    "VALUES(?, NOW(), ?, ?)",
+            TABLE_COUNTRY, COUNTRY_COLUMN_NAME, COUNTRY_COLUMN_CREATE_DATE, COUNTRY_COLUMN_CREATED_BY, COUNTRY_COLUMN_LAST_UPDATE_BY);
     public static final String INSERT_CITY_START = String.format(
-            "INSERT INTO %s(%s, %s, %s, %s, %s, " +
-                    "VALUES('?', ?, NOW(), '?', '?'",
+            "INSERT INTO %s(%s, %s, %s, %s, %s) " +
+                    "VALUES(?, ?, NOW(), ?, ?)",
             TABLE_CITY, CITY_COLUMN_NAME, CITY_COLUMN_COUNTRY_ID,
             CITY_COLUMN_CREATE_DATE, CITY_COLUMN_CREATED_BY, CITY_COLUMN_LAST_UPDATE_BY);
     public static final String INSERT_ADDRESS_START = String.format(
             "INSERT INTO %s(%s, %s, %s, %s, %s, " +
-                    "%s, %s, %s" +
-                "VALUES('?', '?', ?, '?', '?', " +
-                    "NOW(), '?', '?'",
+                    "%s, %s, %s) " +
+                "VALUES(?, ?, ?, ?, ?, " +
+                    "NOW(), ?, ?)",
             TABLE_ADDRESS, ADDRESS_COLUMN_ADDRESS, ADDRESS_COLUMN_ADDRESS2, ADDRESS_COLUMN_CITY_ID,
             ADDRESS_COLUMN_POSTAL_CODE, ADDRESS_COLUMN_PHONE, ADDRESS_COLUMN_CREATE_DATE,
             ADDRESS_COLUMN_CREATED_BY, ADDRESS_COLUMN_LAST_UPDATE_BY);
     public static final String INSERT_CUSTOMER_START = String.format(
             "INSERT INTO %s(%s, %s, %s, %s, " +
-                    "%s, %s)" +
-                    "VALUES('?', ?, ?, NOW(), '?', '?'",
+                    "%s, %s) " +
+                    "VALUES(?, ?, ?, NOW(), ?, ?)",
             TABLE_CUSTOMER, CUSTOMER_COLUMN_NAME, CUSTOMER_COLUMN_ADDRESS_ID, CUSTOMER_COLUMN_ACTIVE,
             CUSTOMER_COLUMN_CREATE_DATE, CUSTOMER_COLUMN_CREATED_BY, CUSTOMER_COLUMN_LAST_UPDATE_BY);
 
@@ -96,7 +98,7 @@ public class DataSourceSourceMySql implements IDataSource {
     @Override
     public boolean openConnection() {
         try {
-            conn = DriverManager.getConnection(CONNECTION_STRING);
+            conn = DriverManager.getConnection(CONNECTION_STRING, CONNECTION_USERNAME, CONNECTION_PASSWORD);
 
             queryGetConsultant = conn.prepareStatement(GET_CONSULTANT_QUERY_START, Statement.RETURN_GENERATED_KEYS);
             queryValidateLogin = conn.prepareStatement(VALIDATE_LOGIN_QUERY_START, Statement.RETURN_GENERATED_KEYS);
@@ -178,28 +180,31 @@ public class DataSourceSourceMySql implements IDataSource {
 
     @Override
     public int addCustomer(Customer customer) {
+
         String updatedBy = customer.getConsultant().getName();
         Address ca = customer.getAddress();
         String customerCountry = ca.getCity().getCountry().getCountryName();
         String customerCity = ca.getCity().getCityName();
         int customerActive = 1;
         try{
+            conn.setAutoCommit(false);
+
             insertCustomerCountry.setString(1, customerCountry);
             insertCustomerCountry.setString(2, updatedBy);
             insertCustomerCountry.setString(3, updatedBy);
             int countryID = insertCustomerCountry.executeUpdate();
             insertCustomerCity.setString(1, customerCity);
-            insertCustomerCountry.setString(2, updatedBy);
-            insertCustomerCountry.setString(3, String.valueOf(countryID));
-            insertCustomerCountry.setString(4, updatedBy);
+            insertCustomerCity.setString(2, String.valueOf(countryID));
+            insertCustomerCity.setString(3, updatedBy);
+            insertCustomerCity.setString(4, updatedBy);
             int cityID = insertCustomerCity.executeUpdate();
             insertCustomerAddress.setString(1, ca.getAddress());
             insertCustomerAddress.setString(2, ca.getAddress2());
             insertCustomerAddress.setString(3, String.valueOf(cityID));
             insertCustomerAddress.setString(4, ca.getPostalCode());
-            insertCustomerAddress.setString(6, ca.getPhone());
+            insertCustomerAddress.setString(5, ca.getPhone());
+            insertCustomerAddress.setString(6, updatedBy);
             insertCustomerAddress.setString(7, updatedBy);
-            insertCustomerAddress.setString(8, updatedBy);
             int addressID = insertCustomerAddress.executeUpdate();
             insertCustomer.setString(1, customer.getName());
             insertCustomer.setString(2, String.valueOf(addressID));
@@ -209,9 +214,22 @@ public class DataSourceSourceMySql implements IDataSource {
             int customerID = insertCustomer.executeUpdate();
 
             return customerID;
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return -1;
+        } catch (Exception e) {
+            try {
+                e.printStackTrace();
+                System.out.println("Rolling back...");
+                conn.rollback();
+                return -1;
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+                return -1;
+            }
+        } finally {
+            try {
+                conn.setAutoCommit(true);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
     }
 

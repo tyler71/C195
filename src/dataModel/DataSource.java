@@ -3,7 +3,7 @@ package dataModel;
 public class DataSource {
     private static IDataSource db;
 
-    private DataSource() {
+    public DataSource() {
         db = new DataSourceSourceMySql();
         db.openConnection();
     }

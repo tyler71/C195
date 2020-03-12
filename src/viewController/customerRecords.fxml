@@ -42,12 +42,26 @@ TODO Include TableView of Customers
                 <TextField fx:id="customerNameField"/>
             </HBox>
             <HBox>
-                <Label text="Customer Address"/>
+                <Label text="Phone Number"/>
+                <TextField fx:id="customerPhoneNumberField"/>
+            </HBox>
+            <HBox>
+                <Label text="Address"/>
                 <TextField fx:id="customerAddressField"/>
             </HBox>
             <HBox>
-                <Label text="Customer Phone Number"/>
-                <TextField fx:id="customerPhoneNumberField"/>
+                <HBox>
+                    <Label text="City"/>
+                    <TextField fx:id="customerCityField" prefWidth="100"/>
+                </HBox>
+                <HBox>
+                    <Label text="Postal Code"/>
+                    <TextField fx:id="customerPostalCode" prefWidth="80"/>
+                </HBox>
+            </HBox>
+            <HBox>
+                <Label text="Country"/>
+                <TextField fx:id="customerCountry" prefWidth="80"/>
             </HBox>
             <Button text="Save" onAction="#handleSave"/>
         </VBox>

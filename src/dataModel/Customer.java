@@ -4,8 +4,8 @@ import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 
 public class Customer {
-    private SimpleIntegerProperty _id;
-    private SimpleStringProperty name;
+    private SimpleIntegerProperty _id = new SimpleIntegerProperty();
+    private SimpleStringProperty name = new SimpleStringProperty();
     private boolean active = true;
     private Address address;
     private Consultant consultant;

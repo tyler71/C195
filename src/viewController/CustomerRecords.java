@@ -1,14 +1,19 @@
 package viewController;
 
+import dataModel.Consultant;
 import dataModel.Customer;
 import dataModel.DataSource;
-import dataModel.DataSourceSourceMySql;
+import dataModel.IDataSource;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.scene.control.*;
+import javafx.scene.control.RadioButton;
+import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
+import javafx.scene.control.ToggleGroup;
 
+import javax.xml.crypto.Data;
 import java.util.ArrayList;
 
 public class CustomerRecords {
@@ -22,6 +27,12 @@ public class CustomerRecords {
     private TextField customerNameField;
     @FXML
     private TextField customerAddressField;
+    @FXML
+    private TextField customerCityField;
+    @FXML
+    private TextField customerPostalCode;
+    @FXML
+    private TextField customerCountry;
     @FXML
     private TextField customerPhoneNumberField;
 
@@ -76,18 +87,24 @@ public class CustomerRecords {
     @FXML
     private void handleSave() {
         int _id;
+        Consultant currentConsultant = new Consultant("Tyler", "test");
         String customerName = customerNameField.getText();
-        String customerAddress = customerAddressField.getText();
+        String customerAddressName = customerAddressField.getText();
+        String customerCityName = customerCityField.getText();
+        String customerPostal = customerPostalCode.getText();
+        String customerCountryName = customerCountry.getText();
         String customerPhoneNumber = customerPhoneNumberField.getText();
 
         RadioButton selectedRadioButton = (RadioButton) addUpdateToggle.getSelectedToggle();
         String selectedRadio = selectedRadioButton.getId();
         if(selectedRadio.equals("radioAddCustomer")) {
-            DataSource.getDb().addCustomer(customerName, customerAddress, customerPhoneNumber);
+            Customer generated = new Customer(currentConsultant, customerName, customerAddressName, "null",
+                    customerCityName, customerCountryName, customerPostal, customerPhoneNumber);
+            DataSource.getDb().addCustomer(generated);
         } else if (selectedRadio.equals("radioUpdateCustomer")) {
             try {
                 _id = customerRecordsView.getSelectionModel().getSelectedItem().get_id();
-                DataSource.getDb().updateCustomer(_id, customerName, customerAddress, customerPhoneNumber);
+                DataSource.getDb().updateCustomer(_id, customerName, customerAddressName, customerPhoneNumber);
             } catch (NullPointerException ignored) {}
         }
     }
