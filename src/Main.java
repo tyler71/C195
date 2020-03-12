@@ -9,6 +9,7 @@ public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception{
+        new DataSource();
         Parent root = FXMLLoader.load(getClass().getResource("viewController/mainWindow.fxml"));
         primaryStage.setTitle("Login");
 //        primaryStage.setScene(new Scene(root, 300, 150));
