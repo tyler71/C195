@@ -2,7 +2,6 @@ package dataModel;
 
 import java.sql.*;
 import java.time.ZonedDateTime;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -91,7 +90,7 @@ public class DataSourceSourceMySql implements IDataSource {
             TABLE_COUNTRY, COUNTRY_COLUMN_NAME, COUNTRY_COLUMN_LAST_UPDATE_BY, COUNTRY_COLUMN_ID);
     public static final String UPDATE_CUSTOMER_CITY = String.format(
             "UPDATE %s SET %s=?, %s=?, %s=? WHERE %s = ?",
-            TABLE_CITY, CITY_COLUMN_COUNTRY_ID, CITY_COLUMN_LAST_UPDATE_BY, CITY_COLUMN_ID);
+            TABLE_CITY, CITY_COLUMN_NAME, CITY_COLUMN_COUNTRY_ID, CITY_COLUMN_LAST_UPDATE_BY, CITY_COLUMN_ID);
     public static final String UPDATE_CUSTOMER_ADDRESS = String.format(
             "UPDATE %s SET %s=?, %s=?, %s=?," +
                     "%s=?, %s=?, %s=?" +
@@ -288,6 +287,48 @@ public class DataSourceSourceMySql implements IDataSource {
 
     @Override
     public boolean updateCustomer(int CustomerID, Customer customer) {
+        String updatedBy = customer.getConsultant().getName();
+        Country country = customer.getAddress().getCity().getCountry();
+        City city = customer.getAddress().getCity();
+        Address address = customer.getAddress();
+        String active = "1";
+
+        int affectedRecords;
+
+        try {
+            conn.setAutoCommit(false);
+
+            updateCustomerCountry.setString(1, country.getCountryName());
+            updateCustomerCountry.setString(2, updatedBy);
+            affectedRecords = updateCustomerCountry.executeUpdate();
+            if(affectedRecords != 1)
+                throw new SQLException("More then one record affected");
+            updateCustomerCity.setString(1, city.getCityName());
+            updateCustomerCity.setString(2, String.valueOf(country.get_id()));
+            affectedRecords = updateCustomerCity.executeUpdate();
+            if(affectedRecords != 1)
+                throw new SQLException("More then one record affected");
+            updateCustomerAddress.setString(1, customer.getName());
+            updateCustomerAddress.setString(2, String.valueOf(address.get_id()));
+            updateCustomerAddress.setString(3, active);
+            updateCustomerAddress.setString(4, updatedBy);
+            updateCustomerAddress.setString(5, String.valueOf(customer.get_id()));
+
+        } catch (SQLException e) {
+            try {
+                conn.rollback();
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            }
+            e.printStackTrace();
+        } finally {
+            try {
+                conn.setAutoCommit(true);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+
         return false;
     }
 
