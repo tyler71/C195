@@ -185,19 +185,32 @@ public class DataSourceSourceMySql implements IDataSource {
         Address ca = customer.getAddress();
         String customerCountry = ca.getCity().getCountry().getCountryName();
         String customerCity = ca.getCity().getCityName();
+
+        ResultSet results;
+        int countryID = -1;
+        int cityID = -1;
+        int addressID = -1;
+        int customerID = -1;
         int customerActive = 1;
+
         try{
             conn.setAutoCommit(false);
 
             insertCustomerCountry.setString(1, customerCountry);
             insertCustomerCountry.setString(2, updatedBy);
             insertCustomerCountry.setString(3, updatedBy);
-            int countryID = insertCustomerCountry.executeUpdate();
+            insertCustomerCountry.executeUpdate();
+            results = insertCustomerCountry.getGeneratedKeys();
+            if(results.next())
+                countryID = results.getInt(1);
             insertCustomerCity.setString(1, customerCity);
             insertCustomerCity.setString(2, String.valueOf(countryID));
             insertCustomerCity.setString(3, updatedBy);
             insertCustomerCity.setString(4, updatedBy);
-            int cityID = insertCustomerCity.executeUpdate();
+            insertCustomerCity.executeUpdate();
+            results = insertCustomerCity.getGeneratedKeys();
+            if(results.next())
+                cityID = results.getInt(1);
             insertCustomerAddress.setString(1, ca.getAddress());
             insertCustomerAddress.setString(2, ca.getAddress2());
             insertCustomerAddress.setString(3, String.valueOf(cityID));
@@ -205,13 +218,19 @@ public class DataSourceSourceMySql implements IDataSource {
             insertCustomerAddress.setString(5, ca.getPhone());
             insertCustomerAddress.setString(6, updatedBy);
             insertCustomerAddress.setString(7, updatedBy);
-            int addressID = insertCustomerAddress.executeUpdate();
+            insertCustomerAddress.executeUpdate();
+            results = insertCustomerAddress.getGeneratedKeys();
+            if(results.next())
+                addressID = results.getInt(1);
             insertCustomer.setString(1, customer.getName());
             insertCustomer.setString(2, String.valueOf(addressID));
             insertCustomer.setString(3, String.valueOf(customerActive));
             insertCustomer.setString(4, updatedBy);
             insertCustomer.setString(5, updatedBy);
-            int customerID = insertCustomer.executeUpdate();
+            insertCustomer.executeUpdate();
+            results = insertCustomer.getGeneratedKeys();
+            if(results.next())
+                customerID = results.getInt(1);
 
             return customerID;
         } catch (Exception e) {
