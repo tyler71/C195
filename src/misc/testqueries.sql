@@ -40,3 +40,15 @@ UPDATE customer
     WHERE customerId='4';
 
 SELECT * from customer;
+
+SELECT userId, userName FROM user WHERE userName = 'test';
+
+# int consultantName, String name, String address, String address2, String cityName, String countryName,
+# String postalCode, String phone
+SELECT cu.lastUpdateBy, cu.customerName, a.address, a.address2, ci.city,
+        c.country, a.postalCode, a.phone FROM customer cu
+            INNER JOIN address a ON cu.addressId = a.addressId
+            INNER JOIN city ci on a.cityId = ci.cityId
+            INNER JOIN country c on c.countryId = ci.countryId
+        WHERE cu.customerId = 5;
+

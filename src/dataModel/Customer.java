@@ -1,31 +1,27 @@
 package dataModel;
 
-import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 
 public class Customer {
-    private SimpleIntegerProperty _id = new SimpleIntegerProperty();
+
+    private int _id;
     private SimpleStringProperty name = new SimpleStringProperty();
     private boolean active = true;
     private Address address;
-    private int consultantID;
+    private String consultantName;
 
-    public Customer(int consultantID, String name, String address, String address2, String cityName, String countryName, String postalCode, String phone) {
+    public Customer(String consultantName, String name, String address, String address2, String cityName, String countryName, String postalCode, String phone) {
         setAddress(address, address2, cityName, countryName, postalCode, phone);
         setName(name);
-        this.consultantID = consultantID;
+        this.consultantName = consultantName;
     }
 
     public int get_id() {
-        return _id.get();
-    }
-
-    public SimpleIntegerProperty _idProperty() {
         return _id;
     }
 
     public void set_id(int _id) {
-        this._id.set(_id);
+        this._id = _id;
     }
 
     public String getName() {
@@ -48,12 +44,12 @@ public class Customer {
         this.address = new Address(address, address2, cityName, countryName, postalCode, phone);
     }
 
-    public int getConsultantID() {
-        return consultantID;
+    public String getConsultantName() {
+        return consultantName;
     }
 
-    public void setConsultantID(int consultant) {
-        this.consultantID = consultant;
+    public void setConsultantName(String consultant) {
+        this.consultantName = consultant;
     }
 }
 
@@ -75,7 +71,8 @@ class Address {
 
     @Override
     public String toString() {
-        return address + " " + address2 + "\n" + city + " " + city.getCountry() + " " + postalCode + " " + phone;
+        String returnString = address + " " + address2 + "\n" + city.getCityName() + " " + city.getCountry() + " " + postalCode + " " + phone;
+        return returnString;
     }
 
     public int get_id() {
