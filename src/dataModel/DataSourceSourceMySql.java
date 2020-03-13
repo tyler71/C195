@@ -60,8 +60,8 @@ public class DataSourceSourceMySql implements IDataSource {
             "SELECT %s FROM %s WHERE %s = ?",
             USER_COLUMN_ID, TABLE_USER, USER_COLUMN_USERNAME);
     public static final String QUERY_ALL_CUSTOMER_START = String.format(
-            "SELECT %s.%s %s.%s, %s.%s, %s.%s %s.%s, %s.%s, " +
-                    "%s.%s, %s.%s, %s.%s FROM %s, " +
+            "SELECT %s.%s, %s.%s, %s.%s, %s.%s, %s.%s, %s.%s, " +
+                    "%s.%s, %s.%s, %s.%s FROM %s " +
                     "INNER JOIN %s ON %s.%s = %s.%s " +
                     "INNER JOIN %s ON %s.%s = %s.%s " +
                     "INNER JOIN %s ON %s.%s = %s.%s",
@@ -437,6 +437,8 @@ public class DataSourceSourceMySql implements IDataSource {
             queryGetCustomer.setString(1, String.valueOf(customerID));
 
             ResultSet results = queryGetCustomer.executeQuery();
+            if(!results.next())
+                throw new SQLException("No Customer Found");
             consultantName = results.getString(2);
             customerName = results.getString(3);
             address = results.getString(4);

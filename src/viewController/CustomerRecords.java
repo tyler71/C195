@@ -1,9 +1,6 @@
 package viewController;
 
-import dataModel.Consultant;
-import dataModel.Customer;
-import dataModel.DataSource;
-import dataModel.IDataSource;
+import dataModel.*;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -61,14 +58,17 @@ public class CustomerRecords {
                 customerRecordsView.setItems(observableCustomerRecords);
             } catch (NullPointerException e) {
                 System.out.println("No Customer Records available");
+                e.printStackTrace();
             }
         });
     }
 
     @FXML
     private void handleSelectCustomerRecord() {
-        if(customerRecordsView.getSelectionModel().getSelectedItem() != null)
+        if(customerRecordsView.getSelectionModel().getSelectedItem() != null) {
             radioUpdateCustomer.fire();
+            populateUpdateFields();
+        }
 //        runs populateUpdateFields
     }
 
@@ -78,10 +78,28 @@ public class CustomerRecords {
             Customer selectedCustomer = customerRecordsView.getSelectionModel().getSelectedItem();
             int customerID = selectedCustomer.get_id();
             Customer retrievedCustomer = DataSource.getDb().getCustomer(customerID);
+            customerNameField.setText(retrievedCustomer.getName());
+            customerPhoneNumberField.setText(retrievedCustomer.getAddress().getPhone());
+            customerAddressField.setText(retrievedCustomer.getAddress().getAddress());
+            customerCityField.setText(retrievedCustomer.getAddress().getCity().getCityName());
+            customerPostalCode.setText(retrievedCustomer.getAddress().getPostalCode());
+            customerCountry.setText(retrievedCustomer.getAddress().getCity().getCountry().getCountryName());
+
         } catch (NullPointerException e) {
             System.out.println("No Customer Records available");
         }
     }
+//    private TextField customerNameField;
+//    @FXML
+//    private TextField customerAddressField;
+//    @FXML
+//    private TextField customerCityField;
+//    @FXML
+//    private TextField customerPostalCode;
+//    @FXML
+//    private TextField customerCountry;
+//    @FXML
+//    private TextField customerPhoneNumberField;
 
     @FXML
     private void handleSave() {

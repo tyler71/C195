@@ -5,15 +5,18 @@ import javafx.beans.property.SimpleStringProperty;
 public class Customer {
 
     private int _id;
-    private SimpleStringProperty name = new SimpleStringProperty();
     private boolean active = true;
     private Address address;
-    private String consultantName;
+    private SimpleStringProperty consultantName = new SimpleStringProperty();
+    private SimpleStringProperty name = new SimpleStringProperty();
+    private SimpleStringProperty phone = new SimpleStringProperty();
 
-    public Customer(String consultantName, String name, String address, String address2, String cityName, String countryName, String postalCode, String phone) {
-        setAddress(address, address2, cityName, countryName, postalCode, phone);
+    public Customer(String consultantName, String name, String mainAddress, String address2, String cityName, String countryName, String postalCode, String phone) {
+        setAddress(mainAddress, address2, cityName, countryName, postalCode, phone);
         setName(name);
-        this.consultantName = consultantName;
+        setConsultantName(consultantName);
+        this.phone = address.phoneProperty();
+        System.out.println(this.phone);
     }
 
     public int get_id() {
@@ -36,6 +39,14 @@ public class Customer {
         this.name.set(name);
     }
 
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
+    }
+
     public Address getAddress() {
         return address;
     }
@@ -45,140 +56,16 @@ public class Customer {
     }
 
     public String getConsultantName() {
+        return consultantName.get();
+    }
+
+    public SimpleStringProperty consultantNameProperty() {
         return consultantName;
     }
 
-    public void setConsultantName(String consultant) {
-        this.consultantName = consultant;
+    public void setConsultantName(String consultantName) {
+        this.consultantName.set(consultantName);
     }
 }
 
-class Address {
-    private int _id;
-    private String address;
-    private String address2;
-    private City city;
-    private String postalCode;
-    private String phone;
 
-    public Address(String address, String address2, String cityName, String countryName, String postalCode, String phone) {
-        this.address = address;
-        this.address2 = address2;
-        this.city = new City(cityName, countryName);
-        this.postalCode = postalCode;
-        this.phone = phone;
-    }
-
-    @Override
-    public String toString() {
-        String returnString = address + " " + address2 + "\n" + city.getCityName() + " " + city.getCountry() + " " + postalCode + " " + phone;
-        return returnString;
-    }
-
-    public int get_id() {
-        return _id;
-    }
-
-    public void set_id(int _id) {
-        this._id = _id;
-    }
-
-    public String getAddress() {
-        return address;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
-    }
-
-    public String getAddress2() {
-        return address2;
-    }
-
-    public void setAddress2(String address2) {
-        this.address2 = address2;
-    }
-
-    public City getCity() {
-        return city;
-    }
-
-    public void setCity(String cityName, String country) {
-        this.city = new City(cityName, country);
-    }
-
-    public String getPostalCode() {
-        return postalCode;
-    }
-
-    public void setPostalCode(String postalCode) {
-        this.postalCode = postalCode;
-    }
-
-    public String getPhone() {
-        return phone;
-    }
-
-    public void setPhone(String phone) {
-        this.phone = phone;
-    }
-}
-
-class City {
-    private int _id;
-    private String cityName;
-    private Country country;
-
-    public City(String cityName, String country) {
-        this.cityName = cityName;
-        this.country = new Country(country);
-    }
-
-    public int get_id() {
-        return _id;
-    }
-
-    public void set_id(int _id) {
-        this._id = _id;
-    }
-
-    public String getCityName() {
-        return cityName;
-    }
-
-    public void setCityName(String cityName) {
-        this.cityName = cityName;
-    }
-
-    public Country getCountry() {
-        return country;
-    }
-
-    public void setCountry(String country) {
-        this.country = new Country(country);
-    }
-}
-class Country {
-    private int _id;
-    private String countryName;
-
-    public Country(String countryName) {
-        this.countryName = countryName;
-    }
-
-    public int get_id() {
-        return _id;
-    }
-
-    public void set_id(int _id) {
-        this._id = _id;
-    }
-
-    public String getCountryName() {
-        return countryName;
-    }
-
-    public void setCountryName(String countryName) {
-        this.countryName = countryName;
-    }
-}
