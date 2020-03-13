@@ -38,3 +38,5 @@ UPDATE customer
         active='1',
         lastUpdateBy='auser'
     WHERE customerId='4';
+
+SELECT * from customer;

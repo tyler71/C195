@@ -8,12 +8,12 @@ public class Customer {
     private SimpleStringProperty name = new SimpleStringProperty();
     private boolean active = true;
     private Address address;
-    private Consultant consultant;
+    private int consultantID;
 
-    public Customer(Consultant consultant, String name, String address, String address2, String cityName, String countryName, String postalCode, String phone) {
+    public Customer(int consultantID, String name, String address, String address2, String cityName, String countryName, String postalCode, String phone) {
         setAddress(address, address2, cityName, countryName, postalCode, phone);
         setName(name);
-        this.consultant = consultant;
+        this.consultantID = consultantID;
     }
 
     public int get_id() {
@@ -48,12 +48,12 @@ public class Customer {
         this.address = new Address(address, address2, cityName, countryName, postalCode, phone);
     }
 
-    public Consultant getConsultant() {
-        return consultant;
+    public int getConsultantID() {
+        return consultantID;
     }
 
-    public void setConsultant(Consultant consultant) {
-        this.consultant = consultant;
+    public void setConsultantID(int consultant) {
+        this.consultantID = consultant;
     }
 }
 

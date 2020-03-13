@@ -88,6 +88,7 @@ public class CustomerRecords {
     private void handleSave() {
         int _id;
         Consultant currentConsultant = new Consultant("Tyler", "test");
+//        TODO Load current consultant from somewhere
         String customerName = customerNameField.getText();
         String customerAddressName = customerAddressField.getText();
         String customerCityName = customerCityField.getText();
@@ -98,14 +99,18 @@ public class CustomerRecords {
         RadioButton selectedRadioButton = (RadioButton) addUpdateToggle.getSelectedToggle();
         String selectedRadio = selectedRadioButton.getId();
         if(selectedRadio.equals("radioAddCustomer")) {
-            Customer generated = new Customer(currentConsultant, customerName, customerAddressName, "null",
+            Customer generated = new Customer(currentConsultant.get_id(), customerName, customerAddressName, "null",
                     customerCityName, customerCountryName, customerPostal, customerPhoneNumber);
             DataSource.getDb().addCustomer(generated);
         } else if (selectedRadio.equals("radioUpdateCustomer")) {
             try {
                 _id = customerRecordsView.getSelectionModel().getSelectedItem().get_id();
-                DataSource.getDb().updateCustomer(_id, customerName, customerAddressName, customerPhoneNumber);
-            } catch (NullPointerException ignored) {}
+                Customer generated = new Customer(currentConsultant.get_id(), customerName, customerAddressName, "null",
+                        customerCityName, customerCountryName, customerPostal, customerPhoneNumber);
+                DataSource.getDb().updateCustomer(_id, generated);
+            } catch (NullPointerException e) {
+                e.printStackTrace();
+            }
         }
     }
 }

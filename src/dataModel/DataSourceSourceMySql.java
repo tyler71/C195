@@ -2,6 +2,7 @@ package dataModel;
 
 import java.sql.*;
 import java.time.ZonedDateTime;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -50,11 +51,13 @@ public class DataSourceSourceMySql implements IDataSource {
     public static final String ADDRESS_COLUMN_CREATED_BY = "createdBy";
     public static final String ADDRESS_COLUMN_LAST_UPDATE_BY = "lastUpdateBy";
 
-    public static final String GET_CONSULTANT_QUERY_START = String.format(
+    public static final String QUERY_CONSULTANT_START = String.format(
             "SELECT %s, %s "
             + "FROM %s WHERE %s = ?",
             USER_COLUMN_USERNAME, USER_COLUMN_PASSWORD,
             TABLE_USER, USER_COLUMN_ID);
+
+    public static final String QUERY_ALL_CUSTOMERS = "SELECT * FROM " + TABLE_CUSTOMER;
 
     public static final String VALIDATE_LOGIN_QUERY_START = String.format(
             "SELECT %s, %s FROM %s WHERE %s = ?",
@@ -106,6 +109,7 @@ public class DataSourceSourceMySql implements IDataSource {
             CUSTOMER_COLUMN_NAME, CUSTOMER_COLUMN_ADDRESS_ID, CUSTOMER_COLUMN_ACTIVE, CUSTOMER_COLUMN_LAST_UPDATE_BY,
             CUSTOMER_COLUMN_ID);
 
+
     private Connection conn;
     private PreparedStatement queryGetConsultant;
     private PreparedStatement queryValidateLogin;
@@ -125,7 +129,7 @@ public class DataSourceSourceMySql implements IDataSource {
         try {
             conn = DriverManager.getConnection(CONNECTION_STRING, CONNECTION_USERNAME, CONNECTION_PASSWORD);
 
-            queryGetConsultant = conn.prepareStatement(GET_CONSULTANT_QUERY_START, Statement.RETURN_GENERATED_KEYS);
+            queryGetConsultant = conn.prepareStatement(QUERY_CONSULTANT_START, Statement.RETURN_GENERATED_KEYS);
             queryValidateLogin = conn.prepareStatement(VALIDATE_LOGIN_QUERY_START, Statement.RETURN_GENERATED_KEYS);
 
             insertCustomerCountry = conn.prepareStatement(INSERT_COUNTRY_START, Statement.RETURN_GENERATED_KEYS);
@@ -137,6 +141,7 @@ public class DataSourceSourceMySql implements IDataSource {
             updateCustomerCity = conn.prepareStatement(UPDATE_CUSTOMER_CITY);
             updateCustomerAddress = conn.prepareStatement(UPDATE_CUSTOMER_ADDRESS);
             updateCustomer = conn.prepareStatement(UPDATE_CUSTOMER);
+
 
             return true;
         } catch (SQLException e) {
@@ -214,7 +219,7 @@ public class DataSourceSourceMySql implements IDataSource {
     @Override
     public int addCustomer(Customer customer) {
 
-        String updatedBy = customer.getConsultant().getName();
+        String updatedBy = getConsultant(customer.getConsultantID()).getName();
         Address ca = customer.getAddress();
         String customerCountry = ca.getCity().getCountry().getCountryName();
         String customerCity = ca.getCity().getCityName();
@@ -287,7 +292,7 @@ public class DataSourceSourceMySql implements IDataSource {
 
     @Override
     public boolean updateCustomer(int CustomerID, Customer customer) {
-        String updatedBy = customer.getConsultant().getName();
+        String updatedBy = getConsultant(customer.getConsultantID()).getName();
         Country country = customer.getAddress().getCity().getCountry();
         City city = customer.getAddress().getCity();
         Address address = customer.getAddress();
@@ -343,7 +348,31 @@ public class DataSourceSourceMySql implements IDataSource {
     }
 
     @Override
-    public List<Customer> getAllCustomers() {
+    public ArrayList<Customer> getAllCustomers() {
+
+        ArrayList<Customer> generatedCustomers = new ArrayList<>();
+        try {
+            Statement statement = conn.createStatement();
+            ResultSet results = statement.executeQuery(QUERY_ALL_CUSTOMERS);
+            while(results.next()) {
+
+                Customer tempCustomer = new Customer(results.getInt(1),
+                        results.getString(2),
+                        results.getString(3),
+                        results.getString(4),
+                        results.getString(5),
+                        results.getString(6),
+                        results.getString(7),
+                        results.getString(8));
+                generatedCustomers.add(tempCustomer);
+            }
+            return generatedCustomers;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+
         return null;
     }
 
