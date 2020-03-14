@@ -128,7 +128,11 @@ public class DataSourceSourceMySql implements IDataSource {
             TABLE_CUSTOMER,
             CUSTOMER_COLUMN_NAME, CUSTOMER_COLUMN_ADDRESS_ID, CUSTOMER_COLUMN_ACTIVE, CUSTOMER_COLUMN_LAST_UPDATE_BY,
             CUSTOMER_COLUMN_ID);
+    public static final String DELETE_CUSTOMER = String.format(
+            String.format("DELETE FROM %s WHERE %s = ?",
+                    TABLE_CUSTOMER, CUSTOMER_COLUMN_ID));
 
+//    DELETE from customer WHERE customerId = 0;
 
     private Connection conn;
     private PreparedStatement queryGetConsultant;
@@ -146,6 +150,8 @@ public class DataSourceSourceMySql implements IDataSource {
     private PreparedStatement updateCustomerCity;
     private PreparedStatement updateCustomerAddress;
     private PreparedStatement updateCustomer;
+
+    private PreparedStatement deleteCustomer;
 
     @Override
     public boolean openConnection() {
@@ -168,6 +174,7 @@ public class DataSourceSourceMySql implements IDataSource {
             updateCustomerAddress = conn.prepareStatement(UPDATE_CUSTOMER_ADDRESS);
             updateCustomer = conn.prepareStatement(UPDATE_CUSTOMER);
 
+            deleteCustomer = conn.prepareStatement(DELETE_CUSTOMER);
 
             return true;
         } catch (SQLException e) {
@@ -190,7 +197,8 @@ public class DataSourceSourceMySql implements IDataSource {
                     updateCustomerCountry,
                     updateCustomerCity,
                     updateCustomerAddress,
-                    updateCustomer
+                    updateCustomer,
+                    deleteCustomer
             );
             for (PreparedStatement query : queries) {
                 if(query != null)
@@ -347,6 +355,9 @@ public class DataSourceSourceMySql implements IDataSource {
             insertCustomer.setString(5, updatedBy);
             insertCustomer.executeUpdate();
             results = insertCustomer.getGeneratedKeys();
+//            TODO
+//            For some reason the generated key comes back as 0?
+//            Figure out why it's 0 so when selecting a customer after adding it, it doesn't bug out
             if(results.next())
                 customerID = results.getInt(1);
             return customerID;
@@ -388,7 +399,6 @@ public class DataSourceSourceMySql implements IDataSource {
             updateCustomerCountry.setString(2, updatedBy);
             updateCustomerCountry.setString(3, countryID);
             affectedRecords = updateCustomerCountry.executeUpdate();
-            System.out.println(updateCustomerCountry);
             if(affectedRecords != 1)
                 throw new SQLException("More then one record affected");
             updateCustomerCity.setString(1, city.getCityName());
@@ -396,7 +406,6 @@ public class DataSourceSourceMySql implements IDataSource {
             updateCustomerCity.setString(3, updatedBy);
             updateCustomerCity.setString(4, cityID);
             affectedRecords = updateCustomerCity.executeUpdate();
-            System.out.println(updateCustomerCity);
             if(affectedRecords != 1)
                 throw new SQLException("More then one record affected");
             updateCustomerAddress.setString(1, customer.getAddress().getAddress());
@@ -407,7 +416,6 @@ public class DataSourceSourceMySql implements IDataSource {
             updateCustomerAddress.setString(6, updatedBy);
             updateCustomerAddress.setString(7, addressID);
             affectedRecords = updateCustomerAddress.executeUpdate();
-            System.out.println(updateCustomerAddress);
             if(affectedRecords != 1)
                 throw new SQLException("More then one record affected");
 
@@ -432,7 +440,30 @@ public class DataSourceSourceMySql implements IDataSource {
 
     @Override
     public boolean deleteCustomer(int customerID) {
-        return false;
+        try {
+            deleteCustomer.setInt(1, customerID);
+            conn.setAutoCommit(false);
+            int affectedRows = deleteCustomer.executeUpdate();
+            if(affectedRows != 1) {
+                throw new SQLException("More then one record selected to be deleted!");
+            }
+        } catch (SQLException e) {
+            try {
+                conn.rollback();
+                e.printStackTrace();
+                return false;
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+                return false;
+            }
+        } finally {
+            try {
+                conn.setAutoCommit(true);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        return true;
     }
 
     @Override

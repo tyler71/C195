@@ -5,10 +5,7 @@ import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.scene.control.RadioButton;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
-import javafx.scene.control.ToggleGroup;
+import javafx.scene.control.*;
 
 import java.util.ArrayList;
 
@@ -108,6 +105,8 @@ public class CustomerRecords {
             Customer generated = new Customer(currentConsultant.getName(), customerName, customerAddressName, "null",
                     customerCityName, customerCountryName, customerPostal, customerPhoneNumber);
             DataSource.getDb().addCustomer(generated);
+            observableCustomerRecords.add(generated);
+            customerRecordsView.getSelectionModel().select(generated);
         } else if (selectedRadio.equals("radioUpdateCustomer")) {
             try {
                 Customer selectedCustomer = customerRecordsView.getSelectionModel().getSelectedItem();
@@ -122,9 +121,21 @@ public class CustomerRecords {
                 int selectedCustomerIndexView = observableCustomerRecords.indexOf(selectedCustomer);
                 observableCustomerRecords.remove(selectedCustomerIndexView);
                 observableCustomerRecords.add(selectedCustomerIndexView, generatedCustomer);
+                customerRecordsView.getSelectionModel().select(generatedCustomer);
             } catch (NullPointerException e) {
                 e.printStackTrace();
             }
         }
+    }
+    @FXML
+    private boolean handleDelete() {
+        Customer customer = customerRecordsView.getSelectionModel().getSelectedItem();
+        int customerID = customer.get_id();
+        boolean success = DataSource.getDb().deleteCustomer(customerID);
+        if(success) {
+            observableCustomerRecords.remove(customer);
+            return true;
+        }
+        return false;
     }
 }

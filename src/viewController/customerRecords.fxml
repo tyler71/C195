@@ -32,7 +32,7 @@ TODO Include TableView of Customers
                     </TableColumn>
                 </columns>
             </TableView>
-            <Button text="Delete"/>
+            <Button text="Delete" onAction="#handleDelete"/>
         </VBox>
     </left>
     <center>

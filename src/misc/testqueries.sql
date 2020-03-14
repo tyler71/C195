@@ -52,3 +52,4 @@ SELECT cu.lastUpdateBy, cu.customerName, a.address, a.address2, ci.city,
             INNER JOIN country c on c.countryId = ci.countryId
         WHERE cu.customerId = 5;
 
+DELETE from customer WHERE customerId = 0;
