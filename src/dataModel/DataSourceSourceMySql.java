@@ -60,12 +60,13 @@ public class DataSourceSourceMySql implements IDataSource {
             "SELECT %s FROM %s WHERE %s = ?",
             USER_COLUMN_ID, TABLE_USER, USER_COLUMN_USERNAME);
     public static final String QUERY_ALL_CUSTOMER_START = String.format(
-            "SELECT %s.%s, %s.%s, %s.%s, %s.%s, %s.%s, %s.%s, " +
+            "SELECT %s.%s, %s.%s, %s.%s, %s.%s, %s.%s, %s.%s, %s.%s, %s.%s, %s.%s, " +
                     "%s.%s, %s.%s, %s.%s FROM %s " +
                     "INNER JOIN %s ON %s.%s = %s.%s " +
                     "INNER JOIN %s ON %s.%s = %s.%s " +
                     "INNER JOIN %s ON %s.%s = %s.%s",
-            TABLE_CUSTOMER, CUSTOMER_COLUMN_ID, TABLE_CUSTOMER, CUSTOMER_COLUMN_LAST_UPDATE_BY,
+            TABLE_CUSTOMER, CUSTOMER_COLUMN_ID, TABLE_ADDRESS, ADDRESS_COLUMN_ID, TABLE_CITY, CITY_COLUMN_ID, TABLE_COUNTRY,
+            COUNTRY_COLUMN_ID, TABLE_CUSTOMER, CUSTOMER_COLUMN_LAST_UPDATE_BY,
             TABLE_CUSTOMER, CUSTOMER_COLUMN_NAME, TABLE_ADDRESS, ADDRESS_COLUMN_ADDRESS,
             TABLE_ADDRESS, ADDRESS_COLUMN_ADDRESS2, TABLE_CITY, CITY_COLUMN_NAME,
             TABLE_COUNTRY, COUNTRY_COLUMN_NAME, TABLE_ADDRESS, ADDRESS_COLUMN_POSTAL_CODE,
@@ -374,7 +375,9 @@ public class DataSourceSourceMySql implements IDataSource {
         Country country = customer.getAddress().getCity().getCountry();
         City city = customer.getAddress().getCity();
         Address address = customer.getAddress();
-        String active = "1";
+        String addressID = String.valueOf(address.get_id());
+        String countryID = String.valueOf(country.get_id());
+        String cityID = String.valueOf(city.get_id());
 
         int affectedRecords;
 
@@ -383,22 +386,34 @@ public class DataSourceSourceMySql implements IDataSource {
 
             updateCustomerCountry.setString(1, country.getCountryName());
             updateCustomerCountry.setString(2, updatedBy);
+            updateCustomerCountry.setString(3, countryID);
             affectedRecords = updateCustomerCountry.executeUpdate();
+            System.out.println(updateCustomerCountry);
             if(affectedRecords != 1)
                 throw new SQLException("More then one record affected");
             updateCustomerCity.setString(1, city.getCityName());
             updateCustomerCity.setString(2, String.valueOf(country.get_id()));
+            updateCustomerCity.setString(3, updatedBy);
+            updateCustomerCity.setString(4, cityID);
             affectedRecords = updateCustomerCity.executeUpdate();
+            System.out.println(updateCustomerCity);
             if(affectedRecords != 1)
                 throw new SQLException("More then one record affected");
-            updateCustomerAddress.setString(1, customer.getName());
-            updateCustomerAddress.setString(2, String.valueOf(address.get_id()));
-            updateCustomerAddress.setString(3, active);
-            updateCustomerAddress.setString(4, updatedBy);
-            updateCustomerAddress.setString(5, String.valueOf(customer.get_id()));
+            updateCustomerAddress.setString(1, customer.getAddress().getAddress());
+            updateCustomerAddress.setString(2, customer.getAddress().getAddress2());
+            updateCustomerAddress.setString(3, cityID);
+            updateCustomerAddress.setString(4, customer.getAddress().getPostalCode());
+            updateCustomerAddress.setString(5, customer.getAddress().getPhone());
+            updateCustomerAddress.setString(6, updatedBy);
+            updateCustomerAddress.setString(7, addressID);
+            affectedRecords = updateCustomerAddress.executeUpdate();
+            System.out.println(updateCustomerAddress);
+            if(affectedRecords != 1)
+                throw new SQLException("More then one record affected");
 
         } catch (SQLException e) {
             try {
+                System.out.println("Rolling back");
                 conn.rollback();
             } catch (SQLException ex) {
                 ex.printStackTrace();
@@ -422,6 +437,9 @@ public class DataSourceSourceMySql implements IDataSource {
 
     @Override
     public Customer getCustomer(int customerID) {
+        int addressID;
+        int cityID;
+        int countryID;
         String consultantName;
         String customerName;
         String address;
@@ -439,14 +457,17 @@ public class DataSourceSourceMySql implements IDataSource {
             ResultSet results = queryGetCustomer.executeQuery();
             if(!results.next())
                 throw new SQLException("No Customer Found");
-            consultantName = results.getString(2);
-            customerName = results.getString(3);
-            address = results.getString(4);
-            address2 = results.getString(5);
-            city = results.getString(6);
-            country = results.getString(7);
-            postalCode = results.getString(8);
-            phoneNumber = results.getString(9);
+            addressID = results.getInt(2);
+            cityID = results.getInt(3);
+            countryID = results.getInt(4);
+            consultantName = results.getString(5);
+            customerName = results.getString(6);
+            address = results.getString(7);
+            address2 = results.getString(8);
+            city = results.getString(9);
+            country = results.getString(10);
+            postalCode = results.getString(11);
+            phoneNumber = results.getString(12);
 
             Customer tempCustomer = new Customer(
                     consultantName,
@@ -458,6 +479,9 @@ public class DataSourceSourceMySql implements IDataSource {
                     postalCode,
                     phoneNumber);
             tempCustomer.set_id(customerID);
+            tempCustomer.getAddress().set_id(addressID);
+            tempCustomer.getAddress().getCity().set_id(cityID);
+            tempCustomer.getAddress().getCity().getCountry().set_id(countryID);
             return tempCustomer;
 
         } catch (SQLException e) {
@@ -470,12 +494,10 @@ public class DataSourceSourceMySql implements IDataSource {
 
     @Override
     public ArrayList<Customer> getAllCustomers() {
-//    SELECT cu.customerId, cu.lastUpdateBy, cu.customerName, a.address, a.address2, ci.city,
-//    c.country, a.postalCode, a.phone FROM customer cu
-//    INNER JOIN address a ON cu.addressId = a.addressId
-//    INNER JOIN city ci on a.cityId = ci.cityId
-//    INNER JOIN country c on c.countryId = ci.countryId
         int customerID;
+        int addressID;
+        int cityID;
+        int countryID;
         String consultantName;
         String customerName;
         String address;
@@ -488,18 +510,21 @@ public class DataSourceSourceMySql implements IDataSource {
         ArrayList<Customer> generatedCustomers = new ArrayList<>();
         try {
             Statement statement = conn.createStatement();
+            System.out.println(QUERY_ALL_CUSTOMER_START);
             ResultSet results = statement.executeQuery(QUERY_ALL_CUSTOMER_START);
             while(results.next()) {
                 customerID = results.getInt(1);
-
-                consultantName = results.getString(2);
-                customerName = results.getString(3);
-                address = results.getString(4);
-                address2 = results.getString(5);
-                city = results.getString(6);
-                country = results.getString(7);
-                postalCode = results.getString(8);
-                phoneNumber = results.getString(9);
+                addressID = results.getInt(2);
+                cityID = results.getInt(3);
+                countryID = results.getInt(4);
+                consultantName = results.getString(5);
+                customerName = results.getString(6);
+                address = results.getString(7);
+                address2 = results.getString(8);
+                city = results.getString(9);
+                country = results.getString(10);
+                postalCode = results.getString(11);
+                phoneNumber = results.getString(12);
 
                 Customer tempCustomer = new Customer(
                         consultantName,
@@ -511,6 +536,9 @@ public class DataSourceSourceMySql implements IDataSource {
                         postalCode,
                         phoneNumber);
                 tempCustomer.set_id(customerID);
+                tempCustomer.getAddress().set_id(addressID);
+                tempCustomer.getAddress().getCity().set_id(cityID);
+                tempCustomer.getAddress().getCity().getCountry().set_id(countryID);
                 generatedCustomers.add(tempCustomer);
             }
             return generatedCustomers;

@@ -89,17 +89,6 @@ public class CustomerRecords {
             System.out.println("No Customer Records available");
         }
     }
-//    private TextField customerNameField;
-//    @FXML
-//    private TextField customerAddressField;
-//    @FXML
-//    private TextField customerCityField;
-//    @FXML
-//    private TextField customerPostalCode;
-//    @FXML
-//    private TextField customerCountry;
-//    @FXML
-//    private TextField customerPhoneNumberField;
 
     @FXML
     private void handleSave() {
@@ -121,10 +110,18 @@ public class CustomerRecords {
             DataSource.getDb().addCustomer(generated);
         } else if (selectedRadio.equals("radioUpdateCustomer")) {
             try {
-                _id = customerRecordsView.getSelectionModel().getSelectedItem().get_id();
-                Customer generated = new Customer(currentConsultant.getName(), customerName, customerAddressName, "null",
+                Customer selectedCustomer = customerRecordsView.getSelectionModel().getSelectedItem();
+                _id = selectedCustomer.get_id();
+                Customer generatedCustomer = new Customer(currentConsultant.getName(), customerName, customerAddressName, "null",
                         customerCityName, customerCountryName, customerPostal, customerPhoneNumber);
-                DataSource.getDb().updateCustomer(_id, generated);
+                generatedCustomer.set_id(_id);
+                generatedCustomer.getAddress().set_id(selectedCustomer.getAddress().get_id());
+                generatedCustomer.getAddress().getCity().set_id(selectedCustomer.getAddress().getCity().get_id());
+                generatedCustomer.getAddress().getCity().getCountry().set_id(selectedCustomer.getAddress().getCity().getCountry().get_id());
+                DataSource.getDb().updateCustomer(_id, generatedCustomer);
+                int selectedCustomerIndexView = observableCustomerRecords.indexOf(selectedCustomer);
+                observableCustomerRecords.remove(selectedCustomerIndexView);
+                observableCustomerRecords.add(selectedCustomerIndexView, generatedCustomer);
             } catch (NullPointerException e) {
                 e.printStackTrace();
             }
