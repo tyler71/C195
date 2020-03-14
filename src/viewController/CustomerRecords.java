@@ -104,7 +104,8 @@ public class CustomerRecords {
         if(selectedRadio.equals("radioAddCustomer")) {
             Customer generated = new Customer(currentConsultant.getName(), customerName, customerAddressName, "null",
                     customerCityName, customerCountryName, customerPostal, customerPhoneNumber);
-            DataSource.getDb().addCustomer(generated);
+            int customerID = DataSource.getDb().addCustomer(generated);
+            generated.set_id(customerID);
             observableCustomerRecords.add(generated);
             customerRecordsView.getSelectionModel().select(generated);
         } else if (selectedRadio.equals("radioUpdateCustomer")) {

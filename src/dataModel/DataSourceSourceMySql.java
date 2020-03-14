@@ -355,9 +355,6 @@ public class DataSourceSourceMySql implements IDataSource {
             insertCustomer.setString(5, updatedBy);
             insertCustomer.executeUpdate();
             results = insertCustomer.getGeneratedKeys();
-//            TODO
-//            For some reason the generated key comes back as 0?
-//            Figure out why it's 0 so when selecting a customer after adding it, it doesn't bug out
             if(results.next())
                 customerID = results.getInt(1);
             return customerID;
