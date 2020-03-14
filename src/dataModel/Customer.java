@@ -9,14 +9,12 @@ public class Customer {
     private Address address;
     private SimpleStringProperty consultantName = new SimpleStringProperty();
     private SimpleStringProperty name = new SimpleStringProperty();
-    private SimpleStringProperty phone = new SimpleStringProperty();
+//    phone property done completely with methods to call address.phone
 
     public Customer(String consultantName, String name, String mainAddress, String address2, String cityName, String countryName, String postalCode, String phone) {
         setAddress(mainAddress, address2, cityName, countryName, postalCode, phone);
         setName(name);
         setConsultantName(consultantName);
-        this.phone = address.phoneProperty();
-        System.out.println(this.phone);
     }
 
     public int get_id() {
@@ -65,6 +63,18 @@ public class Customer {
 
     public void setConsultantName(String consultantName) {
         this.consultantName.set(consultantName);
+    }
+
+    public String getPhone() {
+        return address.getPhone();
+    }
+
+    public SimpleStringProperty phoneProperty() {
+        return address.phoneProperty();
+    }
+
+    public void setPhone(String phone) {
+        address.setPhone(phone);
     }
 }
 

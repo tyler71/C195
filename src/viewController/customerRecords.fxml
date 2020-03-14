@@ -11,6 +11,7 @@ TODO Include TableView of Customers
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
+<?import javafx.scene.control.cell.PropertyValueFactory?>
 <BorderPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
             fx:controller="viewController.CustomerRecords"
@@ -18,11 +19,17 @@ TODO Include TableView of Customers
 
     <left>
         <VBox>
-            <TableView fx:id="customerRecordsView" onMousePressed="#handleSelectCustomerRecord">
+            <TableView fx:id="customerRecordsView" onMouseClicked="#handleSelectCustomerRecord">
                 <columns>
-                    <TableColumn text="Name"/>
-                    <TableColumn text="Address"/>
-                    <TableColumn text="Phone Number"/>
+                    <TableColumn text="Name">
+                        <cellValueFactory><PropertyValueFactory property="name"/></cellValueFactory>
+                    </TableColumn>
+                    <TableColumn text="Address" prefWidth="100">
+                        <cellValueFactory><PropertyValueFactory property="address"/></cellValueFactory>
+                    </TableColumn>
+                    <TableColumn text="Phone Number">
+                        <cellValueFactory><PropertyValueFactory property="phone"/></cellValueFactory>
+                    </TableColumn>
                 </columns>
             </TableView>
             <Button text="Delete"/>
@@ -35,7 +42,7 @@ TODO Include TableView of Customers
                     <ToggleGroup fx:id="addUpdateToggle"/>
                 </fx:define>
                 <RadioButton fx:id="radioAddCustomer" text="Add" toggleGroup="$addUpdateToggle" selected="true"/>
-                <RadioButton fx:id="radioUpdateCustomer" text="Update" onAction="#populateUpdateFields" toggleGroup="$addUpdateToggle"/>
+                <RadioButton fx:id="radioUpdateCustomer" text="Update" toggleGroup="$addUpdateToggle"/>
             </HBox>
             <HBox>
                 <Label text="Customer Name"/>
