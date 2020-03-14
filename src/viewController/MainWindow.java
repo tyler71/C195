@@ -1,7 +1,6 @@
 package viewController;
 
 import dataModel.Appointment;
-import dataModel.Customer;
 import dataModel.DataSource;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -12,8 +11,6 @@ import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
 
 import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.time.ZonedDateTime;
 import java.util.ArrayList;
 
 public class MainWindow {
