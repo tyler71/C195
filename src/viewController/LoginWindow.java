@@ -12,7 +12,6 @@ import javafx.scene.control.*;
 import javafx.stage.Stage;
 
 import java.io.IOException;
-import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
@@ -66,22 +65,34 @@ public class LoginWindow {
 
     @FXML
     public void checkUpcomingAppointment() {
-
+//        TODO Complete appointment section first
     }
 
     @FXML
-    public void handleLogin() throws IOException, SQLException {
+    public void logUserLogin(boolean validLogin) {
+//        TODO Implement saving to file
+        if(validLogin) {
+            
+        } else {
+
+        }
+    }
+
+    @FXML
+    public void handleLogin() throws IOException {
         Stage mainStage = Main.getMainStage();
         String username = usernameValue.getText();
         String password = passwordValue.getText();
         boolean validLogin = DataSource.getDb().validateLogin(username, password);
         if(validLogin) {
+            logUserLogin(true);
             Consultant retrievedConsultant = DataSource.getDb().searchConsultantName(username);
             consultantID = retrievedConsultant.get_id();
             checkUpcomingAppointment();
         Parent mainRoot = FXMLLoader.load(getClass().getResource("mainWindow.fxml"));
         mainStage.setScene(new Scene(mainRoot, 900, 500));
         } else {
+            logUserLogin(false);
             Alert alert = new Alert(Alert.AlertType.ERROR);
             if (locales.contains(systemLanguage)) {
                 alert.setTitle(rb.getString("alert_title"));
