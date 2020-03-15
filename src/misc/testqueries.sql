@@ -42,6 +42,8 @@ UPDATE customer
 SELECT * from customer;
 
 SELECT userId, userName FROM user WHERE userName = 'test';
+SELECT userId FROM user WHERE userName = 'test';
+SELECT userName, password FROM user WHERE userId = '1';
 
 # int consultantName, String name, String address, String address2, String cityName, String countryName,
 # String postalCode, String phone

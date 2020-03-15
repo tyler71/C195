@@ -15,6 +15,7 @@ public class DataSourceSourceMySql implements IDataSource {
     public static final String USER_COLUMN_ID = "userId";
     public static final String USER_COLUMN_USERNAME = "userName";
     public static final String USER_COLUMN_PASSWORD = "password";
+    public static final String USER_COLUMN_ACTIVE = "active";
 
     public static final String TABLE_CUSTOMER = "customer";
     public static final String CUSTOMER_COLUMN_ID = "customerId";
@@ -80,8 +81,8 @@ public class DataSourceSourceMySql implements IDataSource {
 
 
     public static final String VALIDATE_LOGIN_QUERY_START = String.format(
-            "SELECT %s, %s FROM %s WHERE %s = ?",
-            USER_COLUMN_USERNAME, USER_COLUMN_PASSWORD, TABLE_USER, USER_COLUMN_USERNAME);
+            "SELECT %s, %s FROM %s WHERE %s = ? && %s = ?",
+            USER_COLUMN_USERNAME, USER_COLUMN_PASSWORD, TABLE_USER, USER_COLUMN_USERNAME, USER_COLUMN_PASSWORD);
 
 
     public static final String INSERT_COUNTRY_START = String.format(
@@ -218,11 +219,15 @@ public class DataSourceSourceMySql implements IDataSource {
     public Consultant getConsultant(int consultantID) {
         try {
             queryGetConsultant.setString(1, String.valueOf(consultantID));
+            System.out.println(queryGetConsultant);
             ResultSet results = queryGetConsultant.executeQuery();
-            int indexConsultantID = 1;
-            int indexConsultantUsername = 2;
-            int indexConsultantPassword = 3;
+            if(! results.next()) {
+                throw new SQLException("No consultant found");
+            }
+            int indexConsultantUsername = 1;
+            int indexConsultantPassword = 2;
             Consultant consultant = new Consultant(results.getString(indexConsultantUsername), results.getString(indexConsultantPassword));
+            consultant.set_id(consultantID);
             return consultant;
         } catch (SQLException e) {
             System.out.println("Unable to find Consultant");
@@ -233,8 +238,12 @@ public class DataSourceSourceMySql implements IDataSource {
         try {
             queryConsultantName.setString(1, consultantUserName);
             ResultSet results = queryConsultantName.executeQuery();
-            int consultantID = results.getInt(1);
-            return getConsultant(consultantID);
+
+            if(results.next()) {
+                int consultantID = results.getInt(1);
+                return getConsultant(consultantID);
+            } else
+                return null;
         } catch (SQLException e) {
             e.printStackTrace();
             return null;
@@ -253,7 +262,7 @@ public class DataSourceSourceMySql implements IDataSource {
                 if (userName.equals(results.getString(indexConsultantUsername))
                         && password.equals(results.getString(indexConsultantPassword))) {
                     return true;
-                }
+}
             }
             return false;
         } catch (SQLException e) {
@@ -437,6 +446,7 @@ public class DataSourceSourceMySql implements IDataSource {
 
     @Override
     public boolean deleteCustomer(int customerID) {
+//        TODO Improve delete to remove country, city and address records... maybe
         try {
             deleteCustomer.setInt(1, customerID);
             conn.setAutoCommit(false);

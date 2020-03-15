@@ -1,5 +1,8 @@
+package viewController;
+
 import dataModel.DataSource;
 import javafx.application.Application;
+import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -7,14 +10,17 @@ import javafx.stage.Stage;
 
 public class Main extends Application {
 
+    private static Stage mainStage;
+
     @Override
     public void start(Stage primaryStage) throws Exception{
-
+//        Startup mysql connection
         new DataSource();
-        Parent root = FXMLLoader.load(getClass().getResource("viewController/mainWindow.fxml"));
+
+        mainStage = primaryStage;
+        Parent loginRoot = FXMLLoader.load(getClass().getResource("loginWindow.fxml"));
         primaryStage.setTitle("Login");
-//        primaryStage.setScene(new Scene(root, 300, 150));
-        primaryStage.setScene(new Scene(root, 900, 500));
+        primaryStage.setScene(new Scene(loginRoot, 300, 150));
         primaryStage.show();
     }
 
@@ -26,5 +32,9 @@ public class Main extends Application {
 
     public static void main(String[] args) {
         launch(args);
+    }
+
+    public static Stage getMainStage() {
+        return mainStage;
     }
 }

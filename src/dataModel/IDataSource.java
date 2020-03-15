@@ -9,6 +9,7 @@ public interface IDataSource {
     boolean closeConnection();
 
     Consultant getConsultant(int consultantID);
+    Consultant searchConsultantName(String consultantUserName);
     boolean validateLogin(String userName, String password);
 
     int addCustomer(Customer customer);

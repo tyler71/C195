@@ -2,11 +2,21 @@ package viewController;
 
 // TODO Track user logins if enabled
 
+import dataModel.Consultant;
+import dataModel.DataSource;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.GridPane;
+import javafx.stage.Stage;
 
+import java.io.IOException;
+import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
@@ -17,6 +27,8 @@ public class LoginWindow {
     private final ResourceBundle rb = ResourceBundle.getBundle("lan", SWAHILI_KENYAN);
     private final ResourceBundle rbDefault = ResourceBundle.getBundle("lan", Locale.ENGLISH);
     private List<String> locales;
+
+    private GridPane window;
 
     private int consultantID;
 
@@ -61,8 +73,20 @@ public class LoginWindow {
     }
 
     @FXML
-    public void handleLogin() {
-        String username =
+    public void handleLogin() throws IOException, SQLException {
+        Stage mainStage = Main.getMainStage();
+        String username = usernameValue.getText();
+        String password = passwordValue.getText();
+        boolean validLogin = DataSource.getDb().validateLogin(username, password);
+        if(validLogin) {
+            Consultant retrievedConsultant = DataSource.getDb().searchConsultantName(username);
+            consultantID = retrievedConsultant.get_id();
+            checkUpcomingAppointment();
+        Parent mainRoot = FXMLLoader.load(getClass().getResource("mainWindow.fxml"));
+        mainStage.setScene(new Scene(mainRoot, 900, 500));
+        } else {
+
+        }
 
     }
 
