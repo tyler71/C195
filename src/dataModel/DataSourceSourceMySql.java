@@ -5,11 +5,24 @@ import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.prefs.Preferences;
 
 public class DataSourceSourceMySql implements IDataSource {
     public static final String CONNECTION_STRING = "jdbc:mysql://localhost:3306/C195";
     public static final String CONNECTION_USERNAME = "C195";
     public static final String CONNECTION_PASSWORD = "3O316HGTm9EO1oKW";
+
+    public static final String TABLE_APPOINTMENT = "appointment";
+    public static final String APPOINTMENT_COLUMN_ID = "appointmentId";
+    public static final String APPOINTMENT_COLUMN_CUSTOMER_ID = "customerId";
+    public static final String APPOINTMENT_COLUMN_USER_ID = "userId";
+    public static final String APPOINTMENT_COLUMN_TITLE = "title";
+    public static final String APPOINTMENT_COLUMN_DESCRIPTION = "description";
+    public static final String APPOINTMENT_COLUMN_TYPE = "type";
+    public static final String APPOINTMENT_COLUMN_START = "start";
+    public static final String APPOINTMENT_COLUMN_END = "end";
+    public static final String APPOINTMENT_COLUMN_CREATED_BY = "createdBy";
+    public static final String APPOINTMENT_COLUMN_LAST_UPDATE_BY = "lastUpdateBy";
 
     public static final String TABLE_USER = "user";
     public static final String USER_COLUMN_ID = "userId";
@@ -51,6 +64,21 @@ public class DataSourceSourceMySql implements IDataSource {
     public static final String ADDRESS_COLUMN_CREATE_DATE = "createDate";
     public static final String ADDRESS_COLUMN_CREATED_BY = "createdBy";
     public static final String ADDRESS_COLUMN_LAST_UPDATE_BY = "lastUpdateBy";
+
+    public static final String QUERY_GET_ALL_APPOINTMENT_START = String.format(
+            "SELECT %s, %s, %s, %s, %s, " +
+                    "%s, %s, %s, %s, %s " +
+                    "FROM %s",
+            APPOINTMENT_COLUMN_ID, APPOINTMENT_COLUMN_CUSTOMER_ID, APPOINTMENT_COLUMN_USER_ID,
+            APPOINTMENT_COLUMN_TITLE, APPOINTMENT_COLUMN_DESCRIPTION, APPOINTMENT_COLUMN_TYPE,
+            APPOINTMENT_COLUMN_START, APPOINTMENT_COLUMN_END, APPOINTMENT_COLUMN_CREATED_BY,
+            APPOINTMENT_COLUMN_LAST_UPDATE_BY,
+            TABLE_APPOINTMENT);
+    public static final String QUERY_GET_USER_APPOINTMENT_START = String.format(
+            QUERY_GET_ALL_APPOINTMENT_START + " WHERE " + APPOINTMENT_COLUMN_USER_ID + " = ?"
+    );
+//    SELECT appointmentId, customerId, userId, title, description, type, start, end, createdBy, lastUpdateBy
+//    FROM appointment WHERE userId = 1;
 
     public static final String QUERY_CONSULTANT_START = String.format(
             "SELECT %s, %s "
@@ -141,6 +169,7 @@ public class DataSourceSourceMySql implements IDataSource {
     private PreparedStatement queryValidateLogin;
     private PreparedStatement queryAllCustomers;
     private PreparedStatement queryGetCustomer;
+    private PreparedStatement queryGetAllAppointment;
 
     private PreparedStatement insertCustomerCountry;
     private PreparedStatement insertCustomerCity;
@@ -164,6 +193,7 @@ public class DataSourceSourceMySql implements IDataSource {
             queryValidateLogin = conn.prepareStatement(VALIDATE_LOGIN_QUERY_START);
             queryAllCustomers = conn.prepareStatement(QUERY_ALL_CUSTOMER_START);
             queryGetCustomer = conn.prepareStatement(QUERY_GET_CUSTOMER_START);
+            queryGetAllAppointment = conn.prepareStatement(QUERY_GET_ALL_APPOINTMENT_START);
 
             insertCustomerCountry = conn.prepareStatement(INSERT_COUNTRY_START, Statement.RETURN_GENERATED_KEYS);
             insertCustomerCity = conn.prepareStatement(INSERT_CITY_START, Statement.RETURN_GENERATED_KEYS);
@@ -191,6 +221,7 @@ public class DataSourceSourceMySql implements IDataSource {
                     queryGetConsultant,
                     queryValidateLogin,
                     queryAllCustomers,
+                    queryGetAllAppointment,
                     insertCustomerCountry,
                     insertCustomerCity,
                     insertCustomerAddress,
