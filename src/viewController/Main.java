@@ -2,15 +2,18 @@ package viewController;
 
 import dataModel.DataSource;
 import javafx.application.Application;
-import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
+import java.util.prefs.Preferences;
+
 public class Main extends Application {
 
     private static Stage mainStage;
+    private static Preferences programPrefs = Preferences.userNodeForPackage(Main.class);
+    public static final String LOGIN_ENABLED = "LOGIN_ENABLED";
 
     @Override
     public void start(Stage primaryStage) throws Exception{
@@ -35,5 +38,9 @@ public class Main extends Application {
 
     public static Stage getMainStage() {
         return mainStage;
+    }
+
+    public static Preferences getProgramPrefs() {
+        return programPrefs;
     }
 }

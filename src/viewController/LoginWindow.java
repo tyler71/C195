@@ -11,13 +11,16 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
 
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
+import java.util.prefs.Preferences;
 
 public class LoginWindow {
+    public final String LOGIN_STRING = "User %s login: %s\n";
     public static final Locale SWAHILI_KENYAN = new Locale("sw", "KE");
     private final ResourceBundle rb = ResourceBundle.getBundle("lan", SWAHILI_KENYAN);
     private final ResourceBundle rbDefault = ResourceBundle.getBundle("lan", Locale.ENGLISH);
@@ -71,10 +74,21 @@ public class LoginWindow {
     @FXML
     public void logUserLogin(boolean validLogin) {
 //        TODO Implement saving to file
-        if(validLogin) {
-            
-        } else {
-
+        Preferences prefs = Main.getProgramPrefs();
+        boolean loggingEnabled = prefs.getBoolean(Main.LOGIN_ENABLED, false);
+        if (loggingEnabled) {
+            try {
+                boolean APPEND = true;
+                FileWriter userLoginFile = new FileWriter("userlogins.txt", APPEND);
+                if (validLogin) {
+                    userLoginFile.append(String.format(LOGIN_STRING, usernameValue.getText(), "SUCCESS"));
+                } else {
+                    userLoginFile.append(String.format(LOGIN_STRING, usernameValue.getText(), "FAILED"));
+                }
+                userLoginFile.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 

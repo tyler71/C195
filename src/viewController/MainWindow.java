@@ -3,6 +3,8 @@ package viewController;
 import dataModel.Appointment;
 import dataModel.DataSource;
 import javafx.application.Platform;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -52,14 +54,26 @@ public class MainWindow {
     public void initialize() {
         Platform.runLater(() -> {
             try {
-                ArrayList<Appointment> consultantAppointsments = (ArrayList<Appointment>) DataSource.getDb().getConsultantAppointments(1);
-//            TODO Removed hard coded consultID, retrieve from login
+                int consultant_id = LoginWindow.getConsultantID();
+                ArrayList<Appointment> consultantAppointsments = (ArrayList<Appointment>) DataSource.getDb().getConsultantAppointments(consultant_id);
                 observableAppointments.addAll(consultantAppointsments);
                 appointmentView.setItems(observableAppointments);
                 appointmentView.getSelectionModel().selectFirst();
+
             } catch (NullPointerException e) {
                 System.out.println("No Appointments available");
             }
+
+            enableLoggingCheck.setSelected(Main.getProgramPrefs().getBoolean(Main.LOGIN_ENABLED, false));
+//        TODO Should probably load option to log user logins from a file
+            enableLoggingCheck.selectedProperty().addListener((observableValue, aBoolean, t1) -> {
+                enableLoggingCheck.setSelected(t1);
+                if(t1) {
+                    Main.getProgramPrefs().putBoolean(Main.LOGIN_ENABLED, true);
+                } else {
+                    Main.getProgramPrefs().putBoolean(Main.LOGIN_ENABLED, false);
+                }
+            });
         });
     }
 
@@ -148,4 +162,5 @@ public class MainWindow {
             System.out.println("No Customer Records available");
         }
     }
+
 }
