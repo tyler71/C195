@@ -1,16 +1,20 @@
 package dataModel;
 
+import misc.DateTimeConversion;
+
 import java.sql.*;
 import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.prefs.Preferences;
 
 public class DataSourceSourceMySql implements IDataSource {
     public static final String CONNECTION_STRING = "jdbc:mysql://localhost:3306/C195";
-    public static final String CONNECTION_USERNAME = "C195";
-    public static final String CONNECTION_PASSWORD = "3O316HGTm9EO1oKW";
+    private static final String CONNECTION_USERNAME = "C195";
+    private static final String CONNECTION_PASSWORD = "3O316HGTm9EO1oKW";
+
+    public static final DateTimeFormatter mysqlDateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     public static final String TABLE_APPOINTMENT = "appointment";
     public static final String APPOINTMENT_COLUMN_ID = "appointmentId";
@@ -65,7 +69,7 @@ public class DataSourceSourceMySql implements IDataSource {
     public static final String ADDRESS_COLUMN_CREATED_BY = "createdBy";
     public static final String ADDRESS_COLUMN_LAST_UPDATE_BY = "lastUpdateBy";
 
-    public static final String QUERY_GET_ALL_APPOINTMENT_START = String.format(
+    public static final String QUERY_GET_ALL_APPOINTMENT = String.format(
             "SELECT %s, %s, %s, %s, %s, " +
                     "%s, %s, %s, %s, %s " +
                     "FROM %s",
@@ -75,10 +79,8 @@ public class DataSourceSourceMySql implements IDataSource {
             APPOINTMENT_COLUMN_LAST_UPDATE_BY,
             TABLE_APPOINTMENT);
     public static final String QUERY_GET_USER_APPOINTMENT_START = String.format(
-            QUERY_GET_ALL_APPOINTMENT_START + " WHERE " + APPOINTMENT_COLUMN_USER_ID + " = ?"
+            QUERY_GET_ALL_APPOINTMENT + " WHERE " + APPOINTMENT_COLUMN_USER_ID + " = ?"
     );
-//    SELECT appointmentId, customerId, userId, title, description, type, start, end, createdBy, lastUpdateBy
-//    FROM appointment WHERE userId = 1;
 
     public static final String QUERY_CONSULTANT_START = String.format(
             "SELECT %s, %s "
@@ -193,7 +195,7 @@ public class DataSourceSourceMySql implements IDataSource {
             queryValidateLogin = conn.prepareStatement(VALIDATE_LOGIN_QUERY_START);
             queryAllCustomers = conn.prepareStatement(QUERY_ALL_CUSTOMER_START);
             queryGetCustomer = conn.prepareStatement(QUERY_GET_CUSTOMER_START);
-            queryGetAllAppointment = conn.prepareStatement(QUERY_GET_ALL_APPOINTMENT_START);
+            queryGetAllAppointment = conn.prepareStatement(QUERY_GET_ALL_APPOINTMENT);
 
             insertCustomerCountry = conn.prepareStatement(INSERT_COUNTRY_START, Statement.RETURN_GENERATED_KEYS);
             insertCustomerCity = conn.prepareStatement(INSERT_CITY_START, Statement.RETURN_GENERATED_KEYS);
@@ -579,7 +581,6 @@ public class DataSourceSourceMySql implements IDataSource {
         ArrayList<Customer> generatedCustomers = new ArrayList<>();
         try {
             Statement statement = conn.createStatement();
-            System.out.println(QUERY_ALL_CUSTOMER_START);
             ResultSet results = statement.executeQuery(QUERY_ALL_CUSTOMER_START);
             while(results.next()) {
                 customerID = results.getInt(1);
@@ -642,6 +643,51 @@ public class DataSourceSourceMySql implements IDataSource {
 
     @Override
     public List<Appointment> getAllAppointments() {
+        int appointmentID;
+        int customerID;
+        int consultantID;
+        String appointmentTitle;
+        String appointmentDescription;
+        String appointmentType;
+        String appointmentStart;
+        String appointmentEnd;
+        String createdBy;
+        String lastUpdateBy;
+
+        ArrayList<Appointment> generatedAppointments = new ArrayList<>();
+        try {
+            Statement statement = conn.createStatement();
+            ResultSet results = statement.executeQuery(QUERY_GET_ALL_APPOINTMENT);
+            while(results.next()) {
+                appointmentID = results.getInt(1);
+                customerID = results.getInt(2);
+                consultantID = results.getInt(3);
+                appointmentTitle = results.getString(4);
+                appointmentDescription = results.getString(5);
+                appointmentType = results.getString(6);
+                appointmentStart = results.getString(7);
+                appointmentEnd = results.getString(8);
+                createdBy = results.getString(9);
+                lastUpdateBy = results.getString(10);
+
+                Appointment retrievedAppointment = new Appointment(
+                        customerID,
+                        consultantID,
+                        appointmentTitle,
+                        appointmentDescription,
+                        appointmentType,
+                        DateTimeConversion.parseMysqlSQLTime(appointmentStart),
+                        DateTimeConversion.parseMysqlSQLTime(appointmentEnd),
+                        createdBy,
+                        lastUpdateBy
+                );
+                retrievedAppointment.set_id(appointmentID);
+                generatedAppointments.add(retrievedAppointment);
+            }
+            return generatedAppointments;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
         return null;
     }
 

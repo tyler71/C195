@@ -55,3 +55,6 @@ SELECT cu.lastUpdateBy, cu.customerName, a.address, a.address2, ci.city,
         WHERE cu.customerId = 5;
 
 DELETE from customer WHERE customerId = 0;
+
+SELECT appointmentId, customerId, userId, title, description, type, start, end, createdBy, lastUpdateBy
+FROM appointment WHERE userId = 1;
