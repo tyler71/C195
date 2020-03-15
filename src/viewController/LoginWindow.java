@@ -6,13 +6,9 @@ import dataModel.Consultant;
 import dataModel.DataSource;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
-import javafx.scene.layout.GridPane;
+import javafx.scene.control.*;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -27,8 +23,7 @@ public class LoginWindow {
     private final ResourceBundle rb = ResourceBundle.getBundle("lan", SWAHILI_KENYAN);
     private final ResourceBundle rbDefault = ResourceBundle.getBundle("lan", Locale.ENGLISH);
     private List<String> locales;
-
-    private GridPane window;
+    private String systemLanguage;
 
     private int consultantID;
 
@@ -39,7 +34,7 @@ public class LoginWindow {
     @FXML
     private TextField usernameValue;
     @FXML
-    private TextField passwordValue;
+    private PasswordField passwordValue;
 
     @FXML
     private Button loginButton;
@@ -50,8 +45,8 @@ public class LoginWindow {
             locales = Arrays.asList(
                     "sw"
             );
-            String systemLanguage = Locale.getDefault().getLanguage();
-//            systemLanguage = "sw";
+            systemLanguage = Locale.getDefault().getLanguage();
+            systemLanguage = "sw";
             if(locales.contains(systemLanguage)) {
                 usernameLabel.setText(rb.getString("login"));
                 passwordLabel.setText(rb.getString("password"));
@@ -85,14 +80,23 @@ public class LoginWindow {
         Parent mainRoot = FXMLLoader.load(getClass().getResource("mainWindow.fxml"));
         mainStage.setScene(new Scene(mainRoot, 900, 500));
         } else {
-
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            if (locales.contains(systemLanguage)) {
+                alert.setTitle(rb.getString("alert_title"));
+                alert.setHeaderText(rb.getString("invalid_login"));
+            } else {
+                alert.setTitle(rbDefault.getString("alert_title"));
+                alert.setHeaderText(rbDefault.getString("invalid_login"));
+            }
+            alert.showAndWait();
         }
 
     }
 
     @FXML
     public void handleClear() {
-
+        usernameValue.clear();
+        passwordValue.clear();
     }
 
     public int getConsultantID() {

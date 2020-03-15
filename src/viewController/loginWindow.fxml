@@ -12,6 +12,7 @@ TODO
     -->
 
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.PasswordField?>
 <GridPane fx:controller="viewController.LoginWindow"
           xmlns:fx="http://javafx.com/fxml" alignment="center" hgap="10" vgap="10">
 
@@ -19,7 +20,7 @@ TODO
     <TextField fx:id="usernameValue" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
 
     <Label fx:id="passwordLabel" GridPane.columnIndex="0"  GridPane.rowIndex="1"/>
-    <TextField fx:id="passwordValue" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+    <PasswordField fx:id="passwordValue" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
 
     <Button fx:id="loginButton" onAction="#handleLogin" GridPane.columnIndex="0" GridPane.rowIndex="3"/>
     <Button fx:id="clearButton" onAction="#handleClear" GridPane.columnIndex="1" GridPane.rowIndex="3"/>
