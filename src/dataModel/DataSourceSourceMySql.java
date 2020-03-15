@@ -3,6 +3,9 @@ package dataModel;
 import misc.DateTimeConversion;
 
 import java.sql.*;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -14,7 +17,7 @@ public class DataSourceSourceMySql implements IDataSource {
     private static final String CONNECTION_USERNAME = "C195";
     private static final String CONNECTION_PASSWORD = "3O316HGTm9EO1oKW";
 
-    public static final DateTimeFormatter mysqlDateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+    public static final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.S");
 
     public static final String TABLE_APPOINTMENT = "appointment";
     public static final String APPOINTMENT_COLUMN_ID = "appointmentId";
@@ -657,6 +660,7 @@ public class DataSourceSourceMySql implements IDataSource {
         ArrayList<Appointment> generatedAppointments = new ArrayList<>();
         try {
             Statement statement = conn.createStatement();
+            System.out.println("getallAppointments " + QUERY_GET_ALL_APPOINTMENT);
             ResultSet results = statement.executeQuery(QUERY_GET_ALL_APPOINTMENT);
             while(results.next()) {
                 appointmentID = results.getInt(1);
@@ -676,8 +680,8 @@ public class DataSourceSourceMySql implements IDataSource {
                         appointmentTitle,
                         appointmentDescription,
                         appointmentType,
-                        DateTimeConversion.parseMysqlSQLTime(appointmentStart),
-                        DateTimeConversion.parseMysqlSQLTime(appointmentEnd),
+                        parseSqlTime(appointmentStart),
+                        parseSqlTime(appointmentEnd),
                         createdBy,
                         lastUpdateBy
                 );
@@ -696,4 +700,18 @@ public class DataSourceSourceMySql implements IDataSource {
 //        TODO Use collections filters
         return null;
     }
+    @Override
+    public ZonedDateTime parseSqlTime(String time) {
+        ZonedDateTime converted = LocalDateTime.parse(time, dateTimeFormatter)
+                .atOffset(ZoneOffset.UTC)
+                .atZoneSameInstant(ZoneId.systemDefault());
+        return converted;
+    }
+    @Override
+    public String convertToSqlTime(ZonedDateTime dateTimeObject) {
+        ZonedDateTime utcZoned = dateTimeObject.withZoneSameInstant(ZoneOffset.UTC);
+        String convertedTime = dateTimeFormatter.format(utcZoned);
+        return convertedTime;
+    }
+
 }

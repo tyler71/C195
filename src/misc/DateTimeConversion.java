@@ -6,15 +6,15 @@ import java.time.*;
 
 public class DateTimeConversion {
 
-    public static ZonedDateTime parseMysqlSQLTime(String time) {
-        ZonedDateTime converted = LocalDateTime.parse(time, DataSourceSourceMySql.mysqlDateTimeFormatter)
+    public ZonedDateTime parseMysqlSQLTime(String time) {
+        ZonedDateTime converted = LocalDateTime.parse(time, DataSourceSourceMySql.dateTimeFormatter)
                 .atOffset(ZoneOffset.UTC)
                 .atZoneSameInstant(ZoneId.systemDefault());
         return converted;
     }
-    public static String convertToMysqlSqlTime(ZonedDateTime dateTimeObject) {
+    public String convertToMysqlSqlTime(ZonedDateTime dateTimeObject) {
         ZonedDateTime utcZoned = dateTimeObject.withZoneSameInstant(ZoneOffset.UTC);
-        String convertedTime = DataSourceSourceMySql.mysqlDateTimeFormatter.format(utcZoned);
+        String convertedTime = DataSourceSourceMySql.dateTimeFormatter.format(utcZoned);
         return convertedTime;
     }
 

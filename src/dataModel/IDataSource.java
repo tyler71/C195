@@ -18,6 +18,8 @@ public interface IDataSource {
     Customer getCustomer(int customerID);
     List<Customer> getAllCustomers();
 
+    ZonedDateTime parseSqlTime(String time);
+    String convertToSqlTime(ZonedDateTime dateTimeObject);
     int addAppointment(ZonedDateTime appointmentDate, double appointmentDurationMinutes,
                        String appointmentType, int customerID, int consultantID);
     boolean updateAppointment(int appointmentID, ZonedDateTime appointmentDate, double appointmentDurationMinutes,

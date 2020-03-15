@@ -65,7 +65,6 @@ public class MainWindow {
             }
 
             enableLoggingCheck.setSelected(Main.getProgramPrefs().getBoolean(Main.LOGIN_ENABLED, false));
-//        TODO Should probably load option to log user logins from a file
             enableLoggingCheck.selectedProperty().addListener((observableValue, aBoolean, t1) -> {
                 enableLoggingCheck.setSelected(t1);
                 if(t1) {
@@ -121,7 +120,6 @@ public class MainWindow {
         try {
             int appointmentID;
 
-//            ZonedDateTime appointmentDate = ZonedDateTime();
 
             double appointmentDuration = Integer.parseInt(consultantAppointmentDuration.getText());
             String appointmentType = ((RadioButton) addUpdateToggle.getSelectedToggle()).getText();
