@@ -90,8 +90,7 @@ public class CustomerRecords {
     @FXML
     private void handleSave() {
         int _id;
-        Consultant currentConsultant = new Consultant("Tyler", "test");
-//        TODO Load current consultant from somewhere
+        Consultant currentConsultant = DataSource.getDb().getConsultant(LoginWindow.getConsultantID());
         String customerName = customerNameField.getText();
         String customerAddressName = customerAddressField.getText();
         String customerCityName = customerCityField.getText();

@@ -25,7 +25,7 @@ public class LoginWindow {
     private List<String> locales;
     private String systemLanguage;
 
-    private int consultantID;
+    private static int consultantID;
 
     @FXML
     private Label usernameLabel;
@@ -99,7 +99,7 @@ public class LoginWindow {
         passwordValue.clear();
     }
 
-    public int getConsultantID() {
+    public static int getConsultantID() {
         return consultantID;
     }
 }
