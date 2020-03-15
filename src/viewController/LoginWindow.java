@@ -46,14 +46,16 @@ public class LoginWindow {
                     "sw"
             );
             systemLanguage = Locale.getDefault().getLanguage();
-            systemLanguage = "sw";
+//            systemLanguage = "sw";
             if(locales.contains(systemLanguage)) {
+                Main.getMainStage().setTitle(rb.getString("login_title"));
                 usernameLabel.setText(rb.getString("login"));
                 passwordLabel.setText(rb.getString("password"));
 
                 loginButton.setText(rb.getString("submit"));
                 clearButton.setText(rb.getString("clear"));
             } else {
+                Main.getMainStage().setTitle(rbDefault.getString("login_title"));
                 usernameLabel.setText(rbDefault.getString("login"));
                 passwordLabel.setText(rbDefault.getString("password"));
 
