@@ -13,6 +13,7 @@ import javafx.stage.Stage;
 
 import java.io.FileWriter;
 import java.io.IOException;
+import java.time.Instant;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
@@ -20,7 +21,7 @@ import java.util.ResourceBundle;
 import java.util.prefs.Preferences;
 
 public class LoginWindow {
-    public final String LOGIN_STRING = "User %s login: %s\n";
+    public final String LOGIN_STRING = "%s | User %s login: %s\n";
     public static final Locale SWAHILI_KENYAN = new Locale("sw", "KE");
     private final ResourceBundle rb = ResourceBundle.getBundle("lan", SWAHILI_KENYAN);
     private final ResourceBundle rbDefault = ResourceBundle.getBundle("lan", Locale.ENGLISH);
@@ -73,17 +74,17 @@ public class LoginWindow {
 
     @FXML
     public void logUserLogin(boolean validLogin) {
-//        TODO Implement saving to file
+//        TODO include timestamp
         Preferences prefs = Main.getProgramPrefs();
         boolean loggingEnabled = prefs.getBoolean(Main.LOGIN_ENABLED, false);
         if (loggingEnabled) {
             try {
-                boolean APPEND = true;
+                final boolean APPEND = true;
                 FileWriter userLoginFile = new FileWriter("userlogins.txt", APPEND);
                 if (validLogin) {
-                    userLoginFile.append(String.format(LOGIN_STRING, usernameValue.getText(), "SUCCESS"));
+                    userLoginFile.append(String.format(LOGIN_STRING, Instant.now() + "[UTC]", usernameValue.getText(), "SUCCESS"));
                 } else {
-                    userLoginFile.append(String.format(LOGIN_STRING, usernameValue.getText(), "FAILED"));
+                    userLoginFile.append(String.format(LOGIN_STRING, Instant.now() + "[UTC]", usernameValue.getText(), "FAILED"));
                 }
                 userLoginFile.close();
             } catch (IOException e) {
@@ -107,17 +108,21 @@ public class LoginWindow {
         mainStage.setScene(new Scene(mainRoot, 900, 500));
         } else {
             logUserLogin(false);
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            if (locales.contains(systemLanguage)) {
-                alert.setTitle(rb.getString("alert_title"));
-                alert.setHeaderText(rb.getString("invalid_login"));
-            } else {
-                alert.setTitle(rbDefault.getString("alert_title"));
-                alert.setHeaderText(rbDefault.getString("invalid_login"));
-            }
-            alert.showAndWait();
+            showLoginAlert();
         }
+    }
 
+    @FXML
+    private void showLoginAlert() {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        if (locales.contains(systemLanguage)) {
+            alert.setTitle(rb.getString("alert_title"));
+            alert.setHeaderText(rb.getString("invalid_login"));
+        } else {
+            alert.setTitle(rbDefault.getString("alert_title"));
+            alert.setHeaderText(rbDefault.getString("invalid_login"));
+        }
+        alert.showAndWait();
     }
 
     @FXML

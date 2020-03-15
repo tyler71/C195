@@ -5,7 +5,6 @@ public class DataSource {
 
     public DataSource() {
         db = new DataSourceSourceMySql();
-        db.openConnection();
     }
 
     public static IDataSource getDb() {

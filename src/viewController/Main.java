@@ -1,12 +1,14 @@
 package viewController;
 
 import dataModel.DataSource;
+import dataModel.IDataSource;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
+import javax.xml.crypto.Data;
 import java.util.prefs.Preferences;
 
 public class Main extends Application {
@@ -19,6 +21,7 @@ public class Main extends Application {
     public void start(Stage primaryStage) throws Exception{
 //        Startup mysql connection
         new DataSource();
+        DataSource.getDb().openConnection();
 
         mainStage = primaryStage;
         Parent loginRoot = FXMLLoader.load(getClass().getResource("loginWindow.fxml"));
