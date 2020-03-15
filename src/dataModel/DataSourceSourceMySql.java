@@ -1,6 +1,5 @@
 package dataModel;
 
-import misc.DateTimeConversion;
 
 import java.sql.*;
 import java.time.LocalDateTime;
@@ -17,7 +16,7 @@ public class DataSourceSourceMySql implements IDataSource {
     private static final String CONNECTION_USERNAME = "C195";
     private static final String CONNECTION_PASSWORD = "3O316HGTm9EO1oKW";
 
-    public static final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.S");
+private static final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.S");
 
     public static final String TABLE_APPOINTMENT = "appointment";
     public static final String APPOINTMENT_COLUMN_ID = "appointmentId";
@@ -625,12 +624,12 @@ public class DataSourceSourceMySql implements IDataSource {
     }
 
     @Override
-    public int addAppointment(ZonedDateTime appointmentDate, double appointmentDurationMinutes, String appointmentType, int customerID, int consultantID) {
+    public int addAppointment(Appointment appointment) {
         return 0;
     }
 
     @Override
-    public boolean updateAppointment(int appointmentID, ZonedDateTime appointmentDate, double appointmentDurationMinutes, String appointmentType, int customerID, int consultantID) {
+    public boolean updateAppointment(int appointmentID, Appointment appointment) {
         return false;
     }
 
@@ -721,4 +720,8 @@ public class DataSourceSourceMySql implements IDataSource {
         return convertedTime;
     }
 
+    @Override
+    public DateTimeFormatter getDateTimeFormatter() {
+        return dateTimeFormatter;
+    }
 }

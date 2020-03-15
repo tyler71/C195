@@ -11,8 +11,10 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
+import sun.rmi.runtime.Log;
 
 import java.io.IOException;
+import java.time.*;
 import java.util.ArrayList;
 
 public class MainWindow {
@@ -34,6 +36,10 @@ public class MainWindow {
     @FXML
     private TextField consultantIDField;
     @FXML
+    private ToggleGroup appointmentTypeToggle;
+    @FXML
+    private TextField customerIDField;
+    @FXML
     private DatePicker consultantAppointmentDate;
     @FXML
     private TextField consultantAppointmentTimeHour;
@@ -42,14 +48,8 @@ public class MainWindow {
     @FXML
     private TextField consultantAppointmentDuration;
     @FXML
-    private ToggleGroup appointmentTypeToggle;
-    @FXML
-    private TextField customerIDField;
-    @FXML
     private TextArea consultantAppointmentDescription;
 
-    @FXML
-    private BorderPane mainWindow;
 
     public void initialize() {
         Platform.runLater(() -> {
@@ -118,24 +118,40 @@ public class MainWindow {
 //        TODO Logic for Datetime
 //        TODO Logic for appointment type
         try {
-            int appointmentID;
-
-
-            double appointmentDuration = Integer.parseInt(consultantAppointmentDuration.getText());
+            int consultantID = Integer.parseInt(consultantIDField.getText());
             String appointmentType = ((RadioButton) addUpdateToggle.getSelectedToggle()).getText();
             int customerID = Integer.parseInt(customerIDField.getText());
-            int consultantID = Integer.parseInt(consultantIDField.getText());
+            int appointmentYear = consultantAppointmentDate.getValue().getYear() ;
+            Month appointmentMonth = consultantAppointmentDate.getValue().getMonth();
+            int appointmentDay = consultantAppointmentDate.getValue().getDayOfMonth();
+            int appointmentHour = Integer.parseInt(consultantAppointmentTimeHour.getText());
+            int appointmentMinute = Integer.parseInt(consultantAppointmentTimeMinute.getText());
+            int appointmentDuration = Integer.parseInt(consultantAppointmentDuration.getText());
+            String appointmentDescription = consultantAppointmentDescription.getText();
+            String lastUpdateBy = DataSource.getDb().getConsultant(LoginWindow.getConsultantID()).getName();
+
+            LocalDateTime parsedLocalDateTime = LocalDateTime.of(appointmentYear, appointmentMonth,
+                    appointmentDay, appointmentHour, appointmentMinute);
+
+            ZonedDateTime appointmentStart = parsedLocalDateTime.atZone(ZoneOffset.systemDefault());
+            ZonedDateTime appointmentStop = parsedLocalDateTime
+                    .plusMinutes(appointmentDuration)
+                    .atZone(ZoneOffset.systemDefault());
+
+            int appointmentID;
 
             RadioButton selectedAddUpdateRadioButton = (RadioButton) addUpdateToggle.getSelectedToggle();
             String selectedRadioAddUpdate = selectedAddUpdateRadioButton.getId();
             if(selectedRadioAddUpdate.equals("radioAddAppointment")) {
-//                DataSource.getDb().addAppointment(appointmentDate, appointmentDuration,
-//                        appointmentType, customerID, consultantID);
+                Appointment tempAppointment = new Appointment(customerID, consultantID, "null title",
+                        appointmentDescription, appointmentType, appointmentStart, appointmentStop, lastUpdateBy, lastUpdateBy);
+                appointmentID  = DataSource.getDb().addAppointment(appointmentStart, appointmentStop,
+                            appointmentType, customerID, consultantID);
+                observableAppointments.add();
             } else if (selectedRadioAddUpdate.equals("radioUpdateAppointment")) {
                 appointmentID = appointmentView.getSelectionModel().getSelectedItem().get_id();
-//                DataSource.getDb().updateAppointment(appointmentID, appointmentDate, appointmentDuration,
-//                        appointmentType, customerID, consultantID);
-
+                DataSource.getDb().updateAppointment(appointmentID, appointmentStart, appointmentStop,
+                        appointmentType, customerID, consultantID);
             }
         } catch (NumberFormatException e) {
             System.out.println("Invalid input");

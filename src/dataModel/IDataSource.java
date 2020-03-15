@@ -1,6 +1,7 @@
 package dataModel;
 
 import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 public interface IDataSource {
@@ -18,12 +19,11 @@ public interface IDataSource {
     Customer getCustomer(int customerID);
     List<Customer> getAllCustomers();
 
+    DateTimeFormatter getDateTimeFormatter();
     ZonedDateTime parseSqlTime(String time);
     String convertToSqlTime(ZonedDateTime dateTimeObject);
-    int addAppointment(ZonedDateTime appointmentDate, double appointmentDurationMinutes,
-                       String appointmentType, int customerID, int consultantID);
-    boolean updateAppointment(int appointmentID, ZonedDateTime appointmentDate, double appointmentDurationMinutes,
-                              String appointmentType, int customerID, int consultantID);
+    int addAppointment(Appointment appointment);
+    boolean updateAppointment(int appointmentID, Appointment appointment);
     boolean deleteAppointment(int appointmentID);
     Appointment getAppointment(int appointmentID);
     List<Appointment> getAllAppointments();
