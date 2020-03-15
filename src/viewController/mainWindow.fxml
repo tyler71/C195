@@ -33,11 +33,14 @@ TODO
             <TableView fx:id="appointmentView" prefWidth="${appointmentView.width}" onMouseClicked="#handleSelectCustomerRecord">
                 <columns>
                     <TableColumn text="Name">
-<!--                        <cellValueFactory><PropertyValueFactory property="" </cellValueFactory>-->
+                        <cellValueFactory><PropertyValueFactory property="appointmentTitle"/></cellValueFactory>
                     </TableColumn>
-                    <TableColumn text="Type"/>
-                    <TableColumn text="Date"/>
-                    <TableColumn text="Time"/>
+                    <TableColumn text="Type">
+                        <cellValueFactory><PropertyValueFactory property="appointmentType"/></cellValueFactory>
+                    </TableColumn>
+                    <TableColumn text="Date">
+                        <cellValueFactory><PropertyValueFactory property="appointmentStart"/></cellValueFactory>
+                    </TableColumn>
                 </columns>
             </TableView>
             <Button text="Delete" onAction="#deleteAppointment"/>

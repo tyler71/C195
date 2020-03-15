@@ -697,9 +697,16 @@ public class DataSourceSourceMySql implements IDataSource {
 
     @Override
     public List<Appointment> getConsultantAppointments(int consultantID) {
+        List<Appointment> allAppointments = getAllAppointments();
+        List<Appointment> filteredAppointments = new ArrayList<>();
+        allAppointments
+                .stream()
+                .filter(c->(c.getConsultantID()) == consultantID)
+                .forEach(filteredAppointments::add);
 //        TODO Use collections filters
-        return null;
+        return filteredAppointments;
     }
+
     @Override
     public ZonedDateTime parseSqlTime(String time) {
         ZonedDateTime converted = LocalDateTime.parse(time, dateTimeFormatter)

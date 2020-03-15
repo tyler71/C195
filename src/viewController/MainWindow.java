@@ -145,9 +145,10 @@ public class MainWindow {
 
     @FXML
     private void handleSelectCustomerRecord() {
-        if(appointmentView.getSelectionModel().getSelectedItem() != null)
+        if(appointmentView.getSelectionModel().getSelectedItem() != null) {
             radioUpdateAppointment.fire();
-//        runs populateUpdateFields
+            populateUpdateFields();
+        }
     }
 
     @FXML

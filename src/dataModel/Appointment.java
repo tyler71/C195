@@ -21,6 +21,15 @@ public class Appointment {
                        String appointmentType, ZonedDateTime appointmentStart, ZonedDateTime appointmentEnd,
                        String createdBy, String lastUpdateBy) {
 
+        set_id(customerID);
+        setConsultantID(consultantID);
+        setAppointmentTitle(appointmentTitle);
+        setAppointmentDescription(appointmentDescription);
+        setAppointmentType(appointmentType);
+        setAppointmentStart(appointmentStart);
+        setAppointmentEnd(appointmentEnd);
+        setCreatedBy(createdBy);
+        setLastUpdateBy(lastUpdateBy);
     }
 
     public int get_id() {
