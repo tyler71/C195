@@ -120,8 +120,6 @@ public class MainWindow {
 
     @FXML
     private void handleSave() {
-//        TODO Logic for Datetime
-//        TODO Logic for appointment type
         try {
             int appointmentID;
             int consultantID = Integer.parseInt(consultantIDField.getText());
@@ -154,12 +152,16 @@ public class MainWindow {
                 DataSource.getDb().addAppointment(tempAppointment);
                 observableAppointments.add(tempAppointment);
             } else if (selectedRadioAddUpdate.equals("radioUpdateAppointment")) {
-                appointmentID = appointmentView.getSelectionModel().getSelectedItem().get_id();
+                Appointment selectedAppointment = appointmentView.getSelectionModel().getSelectedItem();
+                appointmentID = selectedAppointment.get_id();
                 Appointment tempAppointment = new Appointment(customerID, consultantID, "null title",
                         appointmentDescription, appointmentType, appointmentStart, appointmentStop, lastUpdateBy, lastUpdateBy);
                 tempAppointment.set_id(appointmentID);
                 DataSource.getDb().updateAppointment(appointmentID, tempAppointment);
-                observableAppointments.add(tempAppointment);
+                int selectedAppointmentLocation = observableAppointments.indexOf(selectedAppointment);
+                observableAppointments.remove(selectedAppointment);
+                observableAppointments.add(selectedAppointmentLocation, tempAppointment);
+                appointmentView.getSelectionModel().select(tempAppointment);
             }
         } catch (NumberFormatException e) {
             System.out.println("Invalid input");

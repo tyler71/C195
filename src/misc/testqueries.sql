@@ -63,3 +63,21 @@ INSERT INTO appointment(customerId, userId, title, description, location, contac
                         type, url, start, end, createDate, createdBy, lastUpdateBy)
                         VALUES(1, 1, 'Hello', 'A description', 'here', 'me',
                                'School', 'null', NOW(), NOW(), NOW(), 'me', 'me');
+
+UPDATE appointment
+SET
+    customerId = 1,
+    userId = 1,
+    title = 'title',
+    description = 'desc',
+    location = 'location',
+    contact = 'contact',
+    type = 'type',
+    url = 'url',
+    start = NOW(),
+    end = now(),
+    lastUpdateBy = 'me'
+WHERE appointmentId = 1;
+
+
+

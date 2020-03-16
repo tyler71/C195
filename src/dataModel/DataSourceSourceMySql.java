@@ -18,7 +18,7 @@ public class DataSourceSourceMySql implements IDataSource {
     private static final String CONNECTION_USERNAME = "C195";
     private static final String CONNECTION_PASSWORD = "3O316HGTm9EO1oKW";
 
-private static final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.S");
+    private static final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.S");
 
     public static final String TABLE_APPOINTMENT = "appointment";
     public static final String APPOINTMENT_COLUMN_ID = "appointmentId";
@@ -95,26 +95,43 @@ private static final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofP
                     "%s, %s, %s, " +
                     "%s, %s, %s, %s, " +
                     "%s, %s, %s) " +
-                "VALUES(?, ?, ?, ?, ?, ?, " +
+                    "VALUES(?, ?, ?, ?, ?, ?, " +
                     "?, ?, ?, ?, NOW(), ?, ?)",
             TABLE_APPOINTMENT, APPOINTMENT_COLUMN_CUSTOMER_ID, APPOINTMENT_COLUMN_USER_ID, APPOINTMENT_COLUMN_TITLE,
             APPOINTMENT_COLUMN_DESCRIPTION, APPOINTMENT_COLUMN_LOCATION, APPOINTMENT_COLUMN_CONTACT,
             APPOINTMENT_COLUMN_TYPE, APPOINTMENT_COLUMN_URL, APPOINTMENT_COLUMN_START, APPOINTMENT_COLUMN_END,
             APPOINTMENT_COLUMN_CREATE_DATE, APPOINTMENT_COLUMN_CREATED_BY, APPOINTMENT_COLUMN_LAST_UPDATE_BY);
-    //    INSERT INTO appointment(customerId, userId, title, description, location, contact,
-//                            type, url, start, end,
-//                            createDate, createdBy, lastUpdateBy)
-//    VALUES(1, 1, 'Hello', 'A description', 'here', 'me',
-//                   'School', 'null', NOW(), NOW(), NOW(), 'me', 'me');
-//                "VALUES(?, ?, ?, ?, ?, ?," +
-//                        "?, ?, NOW(), NOW(), NOW(), ?, ?",
+    public static final String UPDATE_APPOINTMENT = String.format(
+            "UPDATE %s SET %s = ?, %s = ?, %s = ?, " +
+                    "%s = ?, %s = ?, %s = ?, " +
+                    "%s = ?, %s = ?, %s = ?, " +
+                    "%s = ?, %s = ?" +
+                    "WHERE %s = ?",
+            TABLE_APPOINTMENT, APPOINTMENT_COLUMN_CUSTOMER_ID, APPOINTMENT_COLUMN_USER_ID, APPOINTMENT_COLUMN_TITLE,
+            APPOINTMENT_COLUMN_DESCRIPTION, APPOINTMENT_COLUMN_LOCATION, APPOINTMENT_COLUMN_CONTACT,
+            APPOINTMENT_COLUMN_TYPE, APPOINTMENT_COLUMN_URL, APPOINTMENT_COLUMN_START,
+            APPOINTMENT_COLUMN_END, APPOINTMENT_COLUMN_LAST_UPDATE_BY, APPOINTMENT_COLUMN_ID);
+    //    UPDATE appointment
+//    SET
+//            customerId = 1,
+//            userId = 1,
+//            title = 'title',
+//            description = 'desc',
+//            location = 'location',
+//            contact = 'contact',
+//            type = 'type',
+//            url = 'url',
+//            start = NOW(),
+//            end = now(),
+//            lastUpdateBy = 'me'
+//    WHERE appointmentId = 1;
     public static final String DELETE_APPOINTMENT = String.format(
             "DELETE FROM %s WHERE %s = ?",
             TABLE_APPOINTMENT, APPOINTMENT_COLUMN_ID);
 
     public static final String QUERY_CONSULTANT_START = String.format(
             "SELECT %s, %s "
-            + "FROM %s WHERE %s = ?",
+                    + "FROM %s WHERE %s = ?",
             USER_COLUMN_USERNAME, USER_COLUMN_PASSWORD,
             TABLE_USER, USER_COLUMN_ID);
     public static final String QUERY_CONSULTANT_NAME = String.format(
@@ -157,7 +174,7 @@ private static final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofP
     public static final String INSERT_ADDRESS_START = String.format(
             "INSERT INTO %s(%s, %s, %s, %s, %s, " +
                     "%s, %s, %s) " +
-                "VALUES(?, ?, ?, ?, ?, " +
+                    "VALUES(?, ?, ?, ?, ?, " +
                     "NOW(), ?, ?)",
             TABLE_ADDRESS, ADDRESS_COLUMN_ADDRESS, ADDRESS_COLUMN_ADDRESS2, ADDRESS_COLUMN_CITY_ID,
             ADDRESS_COLUMN_POSTAL_CODE, ADDRESS_COLUMN_PHONE, ADDRESS_COLUMN_CREATE_DATE,
@@ -178,7 +195,7 @@ private static final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofP
     public static final String UPDATE_CUSTOMER_ADDRESS = String.format(
             "UPDATE %s SET %s=?, %s=?, %s=?," +
                     "%s=?, %s=?, %s=?" +
-                "WHERE %s = ?",
+                    "WHERE %s = ?",
             TABLE_ADDRESS, ADDRESS_COLUMN_ADDRESS, ADDRESS_COLUMN_ADDRESS2, ADDRESS_COLUMN_CITY_ID,
             ADDRESS_COLUMN_POSTAL_CODE, ADDRESS_COLUMN_PHONE, ADDRESS_COLUMN_LAST_UPDATE_BY,
             ADDRESS_COLUMN_ID);
@@ -204,6 +221,7 @@ private static final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofP
     private PreparedStatement queryGetAllAppointment;
     private PreparedStatement queryGetAppointment;
     private PreparedStatement insertAppointment;
+    private PreparedStatement updateAppointment;
     private PreparedStatement deleteAppointment;
 
     private PreparedStatement insertCustomerCountry;
@@ -231,6 +249,7 @@ private static final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofP
             queryGetAllAppointment = conn.prepareStatement(QUERY_GET_ALL_APPOINTMENT);
             queryGetAppointment = conn.prepareStatement(QUERY_GET_APPOINTMENT);
             insertAppointment = conn.prepareStatement(INSERT_APPOINTMENT, Statement.RETURN_GENERATED_KEYS);
+            updateAppointment = conn.prepareStatement(UPDATE_APPOINTMENT);
             deleteAppointment = conn.prepareStatement(DELETE_APPOINTMENT);
 
             insertCustomerCountry = conn.prepareStatement(INSERT_COUNTRY_START, Statement.RETURN_GENERATED_KEYS);
@@ -254,30 +273,31 @@ private static final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofP
 
     @Override
     public boolean closeConnection() {
+        List<PreparedStatement> queries = Arrays.asList(
+                queryGetConsultant,
+                queryValidateLogin,
+                queryAllCustomers,
+                queryGetAllAppointment,
+                queryGetAppointment,
+                updateAppointment,
+                deleteAppointment,
+                insertCustomerCountry,
+                insertCustomerCity,
+                insertCustomerAddress,
+                insertCustomer,
+                updateCustomerCountry,
+                updateCustomerCity,
+                updateCustomerAddress,
+                updateCustomer,
+                deleteCustomer
+        );
         try {
-            List<PreparedStatement> queries = Arrays.asList(
-                    queryGetConsultant,
-                    queryValidateLogin,
-                    queryAllCustomers,
-                    queryGetAllAppointment,
-                    queryGetAppointment,
-                    deleteAppointment,
-                    insertCustomerCountry,
-                    insertCustomerCity,
-                    insertCustomerAddress,
-                    insertCustomer,
-                    updateCustomerCountry,
-                    updateCustomerCity,
-                    updateCustomerAddress,
-                    updateCustomer,
-                    deleteCustomer
-            );
             for (PreparedStatement query : queries) {
-                if(query != null)
+                if (query != null)
                     query.close();
             }
 
-            if(conn != null)
+            if (conn != null)
                 conn.close();
             return true;
         } catch (SQLException e) {
@@ -291,7 +311,7 @@ private static final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofP
         try {
             queryGetConsultant.setString(1, String.valueOf(consultantID));
             ResultSet results = queryGetConsultant.executeQuery();
-            if(! results.next()) {
+            if (!results.next()) {
                 throw new SQLException("No consultant found");
             }
             int indexConsultantUsername = 1;
@@ -304,12 +324,13 @@ private static final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofP
             return null;
         }
     }
+
     public Consultant searchConsultantName(String consultantUserName) {
         try {
             queryConsultantName.setString(1, consultantUserName);
             ResultSet results = queryConsultantName.executeQuery();
 
-            if(results.next()) {
+            if (results.next()) {
                 int consultantID = results.getInt(1);
                 return getConsultant(consultantID);
             } else
@@ -328,11 +349,11 @@ private static final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofP
             ResultSet results = queryValidateLogin.executeQuery();
             int indexConsultantUsername = 1;
             int indexConsultantPassword = 2;
-            while(results.next()) {
+            while (results.next()) {
                 if (userName.equals(results.getString(indexConsultantUsername))
                         && password.equals(results.getString(indexConsultantPassword))) {
                     return true;
-}
+                }
             }
             return false;
         } catch (SQLException e) {
@@ -374,7 +395,7 @@ private static final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofP
             insertCustomerCity.setString(4, updatedBy);
             insertCustomerCity.executeUpdate();
             results = insertCustomerCity.getGeneratedKeys();
-            if(results.next())
+            if (results.next())
                 cityID = results.getInt(1);
             return cityID;
         } catch (Exception e) {
@@ -399,7 +420,7 @@ private static final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofP
             insertCustomerAddress.setString(7, updatedBy);
             insertCustomerAddress.executeUpdate();
             results = insertCustomerAddress.getGeneratedKeys();
-            if(results.next())
+            if (results.next())
                 addressID = results.getInt(1);
             return addressID;
         } catch (SQLException e) {
@@ -420,7 +441,7 @@ private static final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofP
         int customerID = -1;
         int customerActive = 1;
 
-        try{
+        try {
             conn.setAutoCommit(false);
 
             countryID = addCustomerCountry(customer);
@@ -434,7 +455,7 @@ private static final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofP
             insertCustomer.setString(5, updatedBy);
             insertCustomer.executeUpdate();
             results = insertCustomer.getGeneratedKeys();
-            if(results.next())
+            if (results.next())
                 customerID = results.getInt(1);
             return customerID;
         } catch (Exception e) {
@@ -475,14 +496,14 @@ private static final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofP
             updateCustomerCountry.setString(2, updatedBy);
             updateCustomerCountry.setString(3, countryID);
             affectedRecords = updateCustomerCountry.executeUpdate();
-            if(affectedRecords != 1)
+            if (affectedRecords != 1)
                 throw new SQLException("More then one record affected");
             updateCustomerCity.setString(1, city.getCityName());
             updateCustomerCity.setString(2, String.valueOf(country.get_id()));
             updateCustomerCity.setString(3, updatedBy);
             updateCustomerCity.setString(4, cityID);
             affectedRecords = updateCustomerCity.executeUpdate();
-            if(affectedRecords != 1)
+            if (affectedRecords != 1)
                 throw new SQLException("More then one record affected");
             updateCustomerAddress.setString(1, customer.getAddress().getAddress());
             updateCustomerAddress.setString(2, customer.getAddress().getAddress2());
@@ -492,7 +513,7 @@ private static final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofP
             updateCustomerAddress.setString(6, updatedBy);
             updateCustomerAddress.setString(7, addressID);
             affectedRecords = updateCustomerAddress.executeUpdate();
-            if(affectedRecords != 1)
+            if (affectedRecords != 1)
                 throw new SQLException("More then one record affected");
 
         } catch (SQLException e) {
@@ -521,7 +542,7 @@ private static final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofP
             deleteCustomer.setInt(1, customerID);
             conn.setAutoCommit(false);
             int affectedRows = deleteCustomer.executeUpdate();
-            if(affectedRows != 1) {
+            if (affectedRows != 1) {
                 throw new SQLException("More then one record selected to be deleted!");
             }
         } catch (SQLException e) {
@@ -560,7 +581,7 @@ private static final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofP
         try {
             queryGetCustomer.setString(1, String.valueOf(customerID));
             ResultSet results = queryGetCustomer.executeQuery();
-            if(!results.next())
+            if (!results.next())
                 throw new SQLException("No Customer Found");
             addressID = results.getInt(2);
             cityID = results.getInt(3);
@@ -616,7 +637,7 @@ private static final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofP
         try {
             Statement statement = conn.createStatement();
             ResultSet results = statement.executeQuery(QUERY_ALL_CUSTOMER_START);
-            while(results.next()) {
+            while (results.next()) {
                 customerID = results.getInt(1);
                 addressID = results.getInt(2);
                 cityID = results.getInt(3);
@@ -692,7 +713,7 @@ private static final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofP
             insertAppointment.executeUpdate();
 
             results = insertAppointment.getGeneratedKeys();
-            if(results.next())
+            if (results.next())
                 returnedAppointmentID = results.getInt(1);
             return returnedAppointmentID;
         } catch (SQLException e) {
@@ -714,7 +735,72 @@ private static final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofP
 
     @Override
     public boolean updateAppointment(int appointmentID, Appointment appointment) {
-        return false;
+        Appointment a = appointment;
+        int customerId = a.getCustomerID();
+        int userId = a.getCustomerID();
+        String title = a.getAppointmentTitle();
+        String description = a.getAppointmentDescription();
+        String location = "not set";
+        String contact = "not set";
+        String type = a.getAppointmentType();
+        String url = "not set";
+        String start = convertToSqlTime(a.getAppointmentStart());
+        String end = convertToSqlTime(a.getAppointmentEnd());
+        String lastUpdateBy = getConsultant(LoginWindow.getConsultantID()).getName();
+
+        int affectedRecords = 0;
+
+        try {
+            conn.setAutoCommit(false);
+
+            updateAppointment.setInt(1, customerId);
+            updateAppointment.setInt(2, userId);
+            updateAppointment.setString(3, title);
+            updateAppointment.setString(4, description);
+            updateAppointment.setString(5, location);
+            updateAppointment.setString(6, contact);
+            updateAppointment.setString(7, type);
+            updateAppointment.setString(8, url);
+            updateAppointment.setString(9, start);
+            updateAppointment.setString(10, end);
+            updateAppointment.setString(11, lastUpdateBy);
+            updateAppointment.setInt(12, appointmentID);
+            affectedRecords = updateAppointment.executeUpdate();
+            if(affectedRecords > 1) {
+                throw new SQLException("More then one appointment updated, reverting");
+            }
+        } catch (SQLException e) {
+            try {
+                System.out.println("Rolling back...");
+                conn.rollback();
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            }
+            e.printStackTrace();
+        } finally {
+            try {
+                conn.setAutoCommit(true);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+
+
+    return false;
+    //    UPDATE appointment
+//    SET
+//            customerId = 1,
+//            userId = 1,
+//            title = 'title',
+//            description = 'desc',
+//            location = 'location',
+//            contact = 'contact',
+//            type = 'type',
+//            url = 'url',
+//            start = NOW(),
+//            end = now(),
+//            lastUpdateBy = 'me'
+//    WHERE appointmentId = 1;
     }
 
     @Override
@@ -723,7 +809,7 @@ private static final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofP
             deleteAppointment.setInt(1, appointmentID);
             conn.setAutoCommit(false);
             int affectedRecords = deleteAppointment.executeUpdate();
-            if(affectedRecords > 1)
+            if (affectedRecords > 1)
                 throw new SQLException("More then 1 record affected");
             return true;
         } catch (SQLException e) {
@@ -759,7 +845,7 @@ private static final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofP
         try {
             queryGetAppointment.setInt(1, appointmentID);
             ResultSet results = queryGetAppointment.executeQuery();
-            if(results.next()) {
+            if (results.next()) {
                 appointmentID = results.getInt(1);
                 customerID = results.getInt(2);
                 consultantID = results.getInt(3);
@@ -808,7 +894,7 @@ private static final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofP
         try {
             Statement statement = conn.createStatement();
             ResultSet results = statement.executeQuery(QUERY_GET_ALL_APPOINTMENT);
-            while(results.next()) {
+            while (results.next()) {
                 appointmentID = results.getInt(1);
                 customerID = results.getInt(2);
                 consultantID = results.getInt(3);
@@ -847,7 +933,7 @@ private static final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofP
         List<Appointment> filteredAppointments = new ArrayList<>();
         allAppointments
                 .stream()
-                .filter(c->(c.getConsultantID()) == consultantID)
+                .filter(c -> (c.getConsultantID()) == consultantID)
                 .forEach(filteredAppointments::add);
 //        TODO Use collections filters
         return filteredAppointments;
@@ -860,6 +946,7 @@ private static final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofP
                 .atZoneSameInstant(ZoneId.systemDefault());
         return converted;
     }
+
     @Override
     public String convertToSqlTime(ZonedDateTime dateTimeObject) {
         ZonedDateTime utcZoned = dateTimeObject.withZoneSameInstant(ZoneOffset.UTC);
