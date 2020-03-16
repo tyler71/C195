@@ -290,7 +290,6 @@ private static final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofP
     public Consultant getConsultant(int consultantID) {
         try {
             queryGetConsultant.setString(1, String.valueOf(consultantID));
-            System.out.println(queryGetConsultant);
             ResultSet results = queryGetConsultant.executeQuery();
             if(! results.next()) {
                 throw new SQLException("No consultant found");
@@ -559,10 +558,7 @@ private static final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofP
         String phoneNumber;
 
         try {
-            Statement statement = conn.createStatement();
-
             queryGetCustomer.setString(1, String.valueOf(customerID));
-
             ResultSet results = queryGetCustomer.executeQuery();
             if(!results.next())
                 throw new SQLException("No Customer Found");
@@ -761,8 +757,8 @@ private static final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofP
         String lastUpdateBy;
 
         try {
-            Statement statement = conn.createStatement();
-            ResultSet results = statement.executeQuery(QUERY_GET_ALL_APPOINTMENT);
+            queryGetAppointment.setInt(1, appointmentID);
+            ResultSet results = queryGetAppointment.executeQuery();
             if(results.next()) {
                 appointmentID = results.getInt(1);
                 customerID = results.getInt(2);
@@ -811,7 +807,6 @@ private static final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofP
         ArrayList<Appointment> generatedAppointments = new ArrayList<>();
         try {
             Statement statement = conn.createStatement();
-            System.out.println("getallAppointments " + QUERY_GET_ALL_APPOINTMENT);
             ResultSet results = statement.executeQuery(QUERY_GET_ALL_APPOINTMENT);
             while(results.next()) {
                 appointmentID = results.getInt(1);

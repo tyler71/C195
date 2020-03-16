@@ -63,6 +63,7 @@ public class MainWindow {
                 observableAppointments.addAll(consultantAppointsments);
                 appointmentView.setItems(observableAppointments);
                 appointmentView.getSelectionModel().selectFirst();
+                populateUpdateFields();
 
             } catch (NullPointerException e) {
                 System.out.println("No Appointments available");
@@ -122,10 +123,11 @@ public class MainWindow {
 //        TODO Logic for Datetime
 //        TODO Logic for appointment type
         try {
+            int appointmentID;
             int consultantID = Integer.parseInt(consultantIDField.getText());
-            String appointmentType = ((RadioButton) addUpdateToggle.getSelectedToggle()).getText();
+            String appointmentType = ((RadioButton) appointmentTypeToggle.getSelectedToggle()).getText();
             int customerID = Integer.parseInt(customerIDField.getText());
-            int appointmentYear = consultantAppointmentDate.getValue().getYear() ;
+            int appointmentYear = consultantAppointmentDate.getValue().getYear();
             Month appointmentMonth = consultantAppointmentDate.getValue().getMonth();
             int appointmentDay = consultantAppointmentDate.getValue().getDayOfMonth();
             int appointmentHour = Integer.parseInt(consultantAppointmentTimeHour.getText());
@@ -142,8 +144,6 @@ public class MainWindow {
                     .plusMinutes(appointmentDuration)
                     .atZone(ZoneOffset.systemDefault());
 
-            int appointmentID;
-
             RadioButton selectedAddUpdateRadioButton = (RadioButton) addUpdateToggle.getSelectedToggle();
             String selectedRadioAddUpdate = selectedAddUpdateRadioButton.getId();
             if(selectedRadioAddUpdate.equals("radioAddAppointment")) {
@@ -151,6 +151,7 @@ public class MainWindow {
                         appointmentDescription, appointmentType, appointmentStart, appointmentStop, lastUpdateBy, lastUpdateBy);
                 appointmentID  = DataSource.getDb().addAppointment(tempAppointment);
                 tempAppointment.set_id(appointmentID);
+                DataSource.getDb().addAppointment(tempAppointment);
                 observableAppointments.add(tempAppointment);
             } else if (selectedRadioAddUpdate.equals("radioUpdateAppointment")) {
                 appointmentID = appointmentView.getSelectionModel().getSelectedItem().get_id();
@@ -162,6 +163,16 @@ public class MainWindow {
             }
         } catch (NumberFormatException e) {
             System.out.println("Invalid input");
+        }
+
+    }
+
+    @FXML
+    private void handleDeleteCustomerRecord() {
+        Appointment selectedAppointment = appointmentView.getSelectionModel().getSelectedItem();
+        if(selectedAppointment != null) {
+            DataSource.getDb().deleteAppointment(selectedAppointment.get_id());
+            observableAppointments.remove(selectedAppointment);
         }
 
     }

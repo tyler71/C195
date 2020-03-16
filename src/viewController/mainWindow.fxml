@@ -32,7 +32,7 @@ TODO
         <VBox>
             <TableView fx:id="appointmentView" prefWidth="${appointmentView.width}" onMouseClicked="#handleSelectCustomerRecord">
                 <columns>
-                    <TableColumn text="Name">
+                    <TableColumn text="Title">
                         <cellValueFactory><PropertyValueFactory property="appointmentTitle"/></cellValueFactory>
                     </TableColumn>
                     <TableColumn text="Type">
@@ -43,7 +43,7 @@ TODO
                     </TableColumn>
                 </columns>
             </TableView>
-            <Button text="Delete" onAction="#deleteAppointment"/>
+            <Button text="Delete" onAction="#handleDeleteCustomerRecord"/>
         </VBox>
     </center>
     <right>
