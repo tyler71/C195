@@ -1,14 +1,12 @@
 package viewController;
 
 import dataModel.DataSource;
-import dataModel.IDataSource;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
-import javax.xml.crypto.Data;
 import java.util.prefs.Preferences;
 
 public class Main extends Application {
@@ -16,6 +14,7 @@ public class Main extends Application {
     private static Stage mainStage;
     private static Preferences programPrefs = Preferences.userNodeForPackage(Main.class);
     public static final String LOGIN_ENABLED = "LOGIN_ENABLED";
+    public static final String MONTH_VIEW_ENABLED = "MONTH_VIEW_ENABLED";
 
     @Override
     public void start(Stage primaryStage) throws Exception{
