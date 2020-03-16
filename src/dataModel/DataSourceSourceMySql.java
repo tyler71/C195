@@ -210,7 +210,6 @@ public class DataSourceSourceMySql implements IDataSource {
             String.format("DELETE FROM %s WHERE %s = ?",
                     TABLE_CUSTOMER, CUSTOMER_COLUMN_ID));
 
-//    DELETE from customer WHERE customerId = 0;
 
     private Connection conn;
     private PreparedStatement queryGetConsultant;
@@ -613,8 +612,6 @@ public class DataSourceSourceMySql implements IDataSource {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
-
         return null;
     }
 
@@ -784,23 +781,7 @@ public class DataSourceSourceMySql implements IDataSource {
                 e.printStackTrace();
             }
         }
-
-
     return false;
-    //    UPDATE appointment
-//    SET
-//            customerId = 1,
-//            userId = 1,
-//            title = 'title',
-//            description = 'desc',
-//            location = 'location',
-//            contact = 'contact',
-//            type = 'type',
-//            url = 'url',
-//            start = NOW(),
-//            end = now(),
-//            lastUpdateBy = 'me'
-//    WHERE appointmentId = 1;
     }
 
     @Override
@@ -933,9 +914,12 @@ public class DataSourceSourceMySql implements IDataSource {
         List<Appointment> filteredAppointments = new ArrayList<>();
         allAppointments
                 .stream()
+//                TODO - Completed
+//                Lambda used to allow the stream to be compared to the consultantID
+//                This allows for efficent filtering. Not using a lambda would result in
+//                unnecessarily verbose code
                 .filter(c -> (c.getConsultantID()) == consultantID)
                 .forEach(filteredAppointments::add);
-//        TODO Use collections filters
         return filteredAppointments;
     }
 
