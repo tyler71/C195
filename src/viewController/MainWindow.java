@@ -54,6 +54,8 @@ public class MainWindow {
 
 
     public void initialize() {
+//        Lambda used as only one callable needs to be overriden. runLater prevents this code
+//        from being run until the window (MainWindow) is opened.
         Platform.runLater(() -> {
             boolean loggingEnabled = Main.getProgramPrefs().getBoolean(Main.LOGIN_ENABLED, false);
             boolean monthViewEnabled = Main.getProgramPrefs().getBoolean(Main.MONTH_VIEW_ENABLED, false);
@@ -112,8 +114,8 @@ public class MainWindow {
             } else {
                 for(Appointment appointment : appointments) {
                     ZonedDateTime start = appointment.getAppointmentStart();
-                    ZonedDateTime oneMonthAhead = now.plusWeeks(1);
-                    if (start.isBefore(oneMonthAhead) && start.isAfter(now)) {
+                    ZonedDateTime oneWeekAhead = now.plusWeeks(1);
+                    if (start.isBefore(oneWeekAhead) && start.isAfter(now)) {
                         filteredAppointments.add(appointment);
                     }
                 }
@@ -168,6 +170,7 @@ public class MainWindow {
                         .plusMinutes(appointmentDuration)
                         .atZone(ZoneOffset.systemDefault());
 
+
                 RadioButton selectedAddUpdateRadioButton = (RadioButton) addUpdateToggle.getSelectedToggle();
                 String selectedRadioAddUpdate = selectedAddUpdateRadioButton.getId();
                 if (selectedRadioAddUpdate.equals("radioAddAppointment")) {
@@ -175,7 +178,6 @@ public class MainWindow {
                             appointmentDescription, appointmentType, appointmentStart, appointmentStop, lastUpdateBy, lastUpdateBy);
                     appointmentID = DataSource.getDb().addAppointment(tempAppointment);
                     tempAppointment.set_id(appointmentID);
-                    DataSource.getDb().addAppointment(tempAppointment);
 
                     observableAppointments.add(tempAppointment);
                 } else if (selectedRadioAddUpdate.equals("radioUpdateAppointment")) {
