@@ -66,7 +66,6 @@ public class CustomerRecords {
             radioUpdateCustomer.fire();
             populateUpdateFields();
         }
-//        runs populateUpdateFields
     }
 
     @FXML

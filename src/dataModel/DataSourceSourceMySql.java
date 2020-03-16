@@ -721,7 +721,6 @@ private static final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofP
     @Override
     public boolean deleteAppointment(int appointmentID) {
         try {
-
             deleteAppointment.setInt(1, appointmentID);
             conn.setAutoCommit(false);
             int affectedRecords = deleteAppointment.executeUpdate();

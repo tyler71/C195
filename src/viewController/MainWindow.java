@@ -38,6 +38,10 @@ public class MainWindow {
     @FXML
     private ToggleGroup appointmentTypeToggle;
     @FXML
+    private RadioButton personalRadio;
+    @FXML
+    private RadioButton businessRadio;
+    @FXML
     private TextField customerIDField;
     @FXML
     private DatePicker consultantAppointmentDate;
@@ -145,13 +149,16 @@ public class MainWindow {
             if(selectedRadioAddUpdate.equals("radioAddAppointment")) {
                 Appointment tempAppointment = new Appointment(customerID, consultantID, "null title",
                         appointmentDescription, appointmentType, appointmentStart, appointmentStop, lastUpdateBy, lastUpdateBy);
-                appointmentID  = DataSource.getDb().addAppointment(appointmentStart, appointmentStop,
-                            appointmentType, customerID, consultantID);
-                observableAppointments.add();
+                appointmentID  = DataSource.getDb().addAppointment(tempAppointment);
+                tempAppointment.set_id(appointmentID);
+                observableAppointments.add(tempAppointment);
             } else if (selectedRadioAddUpdate.equals("radioUpdateAppointment")) {
                 appointmentID = appointmentView.getSelectionModel().getSelectedItem().get_id();
-                DataSource.getDb().updateAppointment(appointmentID, appointmentStart, appointmentStop,
-                        appointmentType, customerID, consultantID);
+                Appointment tempAppointment = new Appointment(customerID, consultantID, "null title",
+                        appointmentDescription, appointmentType, appointmentStart, appointmentStop, lastUpdateBy, lastUpdateBy);
+                tempAppointment.set_id(appointmentID);
+                DataSource.getDb().updateAppointment(appointmentID, tempAppointment);
+                observableAppointments.add(tempAppointment);
             }
         } catch (NumberFormatException e) {
             System.out.println("Invalid input");
@@ -169,10 +176,30 @@ public class MainWindow {
 
     @FXML
     private void populateUpdateFields() {
-        try{
+        try {
             Appointment selectedAppointment = appointmentView.getSelectionModel().getSelectedItem();
             int appointmentID = selectedAppointment.get_id();
             Appointment retrievedAppointment = DataSource.getDb().getAppointment(appointmentID);
+            ZonedDateTime start = retrievedAppointment.getAppointmentStart();
+            ZonedDateTime end = retrievedAppointment.getAppointmentEnd();
+            Duration appointmentDuration = Duration.between(retrievedAppointment.getAppointmentStart(), retrievedAppointment.getAppointmentEnd());
+            long appointmentDurationMinutes = appointmentDuration.getSeconds() / 60;
+            String appointmentType = retrievedAppointment.getAppointmentType();
+
+            consultantIDField.setText(String.valueOf(retrievedAppointment.getConsultantID()));
+            customerIDField.setText(String.valueOf(retrievedAppointment.getCustomerID()));
+            consultantAppointmentDate.setValue(retrievedAppointment.getAppointmentStart().toLocalDate());
+            consultantAppointmentTimeHour.setText(String.valueOf(retrievedAppointment.getAppointmentStart().getHour()));
+            consultantAppointmentTimeMinute.setText(String.valueOf(retrievedAppointment.getAppointmentStart().getMinute()));
+            consultantAppointmentDuration.setText(String.valueOf(appointmentDurationMinutes));
+            consultantAppointmentDescription.setText(retrievedAppointment.getAppointmentDescription());
+            switch(appointmentType.toLowerCase()) {
+                case "personal": personalRadio.fire();
+                                 break;
+                case "business": businessRadio.fire();
+                                 break;
+                default:         personalRadio.fire();
+            }
         } catch (NullPointerException e) {
             System.out.println("No Customer Records available");
         }
