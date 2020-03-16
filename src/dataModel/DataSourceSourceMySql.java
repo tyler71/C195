@@ -1,6 +1,8 @@
 package dataModel;
 
 
+import viewController.LoginWindow;
+
 import java.sql.*;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -24,9 +26,13 @@ private static final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofP
     public static final String APPOINTMENT_COLUMN_USER_ID = "userId";
     public static final String APPOINTMENT_COLUMN_TITLE = "title";
     public static final String APPOINTMENT_COLUMN_DESCRIPTION = "description";
+    public static final String APPOINTMENT_COLUMN_LOCATION = "location";
+    public static final String APPOINTMENT_COLUMN_CONTACT = "contact";
     public static final String APPOINTMENT_COLUMN_TYPE = "type";
+    public static final String APPOINTMENT_COLUMN_URL = "url";
     public static final String APPOINTMENT_COLUMN_START = "start";
     public static final String APPOINTMENT_COLUMN_END = "end";
+    public static final String APPOINTMENT_COLUMN_CREATE_DATE = "createDate";
     public static final String APPOINTMENT_COLUMN_CREATED_BY = "createdBy";
     public static final String APPOINTMENT_COLUMN_LAST_UPDATE_BY = "lastUpdateBy";
 
@@ -80,14 +86,29 @@ private static final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofP
             APPOINTMENT_COLUMN_START, APPOINTMENT_COLUMN_END, APPOINTMENT_COLUMN_CREATED_BY,
             APPOINTMENT_COLUMN_LAST_UPDATE_BY,
             TABLE_APPOINTMENT);
-    public static final String QUERY_GET_USER_APPOINTMENT_START = String.format(
-            QUERY_GET_ALL_APPOINTMENT + " WHERE " + APPOINTMENT_COLUMN_USER_ID + " = ?"
-    );
+    public static final String QUERY_GET_USER_APPOINTMENT_START = QUERY_GET_ALL_APPOINTMENT
+            + " WHERE " + APPOINTMENT_COLUMN_USER_ID + " = ?";
     public static final String QUERY_GET_APPOINTMENT = String.format(
             QUERY_GET_ALL_APPOINTMENT + " WHERE " + APPOINTMENT_COLUMN_ID + " = ?");
+    public static final String INSERT_APPOINTMENT = String.format(
+            "INSERT INTO %s(%s, %s, %s, " +
+                    "%s, %s, %s, " +
+                    "%s, %s, %s, %s, " +
+                    "%s, %s, %s" +
+                "VALUES(?, ?, ?, ?, ?, ?," +
+                    "?, ?, NOW(), NOW(), NOW(), ?, ?",
+            TABLE_APPOINTMENT, APPOINTMENT_COLUMN_CUSTOMER_ID, APPOINTMENT_COLUMN_USER_ID, APPOINTMENT_COLUMN_TITLE,
+            APPOINTMENT_COLUMN_DESCRIPTION, APPOINTMENT_COLUMN_LOCATION, APPOINTMENT_COLUMN_CONTACT,
+            APPOINTMENT_COLUMN_TYPE, APPOINTMENT_COLUMN_URL, APPOINTMENT_COLUMN_START, APPOINTMENT_COLUMN_END,
+            APPOINTMENT_COLUMN_CREATE_DATE, APPOINTMENT_COLUMN_CREATED_BY, APPOINTMENT_COLUMN_LAST_UPDATE_BY);
+    //    INSERT INTO appointment(customerId, userId, title, description, location, contact,
+//                            type, url, start, end,
+//                            createDate, createdBy, lastUpdateBy)
+//    VALUES(1, 1, 'Hello', 'A description', 'here', 'me',
+//                   'School', 'null', NOW(), NOW(), NOW(), 'me', 'me');
     public static final String DELETE_APPOINTMENT = String.format(
-            String.format("DELETE FROM %s WHERE %s = ?",
-                    TABLE_APPOINTMENT, APPOINTMENT_COLUMN_ID));
+            "DELETE FROM %s WHERE %s = ?",
+            TABLE_APPOINTMENT, APPOINTMENT_COLUMN_ID);
 
     public static final String QUERY_CONSULTANT_START = String.format(
             "SELECT %s, %s "
@@ -180,6 +201,7 @@ private static final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofP
     private PreparedStatement queryGetCustomer;
     private PreparedStatement queryGetAllAppointment;
     private PreparedStatement queryGetAppointment;
+    private PreparedStatement insertAppointment;
     private PreparedStatement deleteAppointment;
 
     private PreparedStatement insertCustomerCountry;
@@ -206,6 +228,7 @@ private static final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofP
             queryGetCustomer = conn.prepareStatement(QUERY_GET_CUSTOMER_START);
             queryGetAllAppointment = conn.prepareStatement(QUERY_GET_ALL_APPOINTMENT);
             queryGetAppointment = conn.prepareStatement(QUERY_GET_APPOINTMENT);
+            insertAppointment = conn.prepareStatement(INSERT_APPOINTMENT, Statement.RETURN_GENERATED_KEYS);
             deleteAppointment = conn.prepareStatement(DELETE_APPOINTMENT);
 
             insertCustomerCountry = conn.prepareStatement(INSERT_COUNTRY_START, Statement.RETURN_GENERATED_KEYS);
@@ -636,7 +659,58 @@ private static final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofP
 
     @Override
     public int addAppointment(Appointment appointment) {
-        return 0;
+        ResultSet results;
+        int returnedAppointmentID = -1;
+
+        int consultantID = LoginWindow.getConsultantID();
+        String updateBy = getConsultant(consultantID).getName();
+
+        int customerID = appointment.getCustomerID();
+        String title = appointment.getAppointmentTitle();
+        String description = appointment.getAppointmentDescription();
+        String location = "not set";
+        String contact = "not set";
+        String type = appointment.getAppointmentType();
+        String url = "not set";
+        String appointmentStart = convertToSqlTime(appointment.getAppointmentStart());
+        String appointmentEnd = convertToSqlTime(appointment.getAppointmentEnd());
+
+        try {
+            conn.setAutoCommit(false);
+
+            insertAppointment.setInt(1, customerID);
+            insertAppointment.setInt(2, consultantID);
+            insertAppointment.setString(3, title);
+            insertAppointment.setString(4, description);
+            insertAppointment.setString(5, location);
+            insertAppointment.setString(6, contact);
+            insertAppointment.setString(7, type);
+            insertAppointment.setString(8, url);
+            insertAppointment.setString(9, appointmentStart);
+            insertAppointment.setString(10, appointmentEnd);
+            insertAppointment.setString(11, updateBy);
+            insertAppointment.setString(12, updateBy);
+            insertAppointment.executeUpdate();
+
+            results = insertAppointment.getGeneratedKeys();
+            if(results.next())
+                returnedAppointmentID = results.getInt(1);
+            return returnedAppointmentID;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            try {
+                conn.rollback();
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            }
+            return -1;
+        } finally {
+            try {
+                conn.setAutoCommit(true);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     @Override
