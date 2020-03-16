@@ -22,6 +22,6 @@ TODO
     <Label fx:id="passwordLabel" GridPane.columnIndex="0"  GridPane.rowIndex="1"/>
     <PasswordField fx:id="passwordValue" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
 
-    <Button fx:id="loginButton" onAction="#handleLogin" GridPane.columnIndex="0" GridPane.rowIndex="3"/>
+    <Button fx:id="loginButton" onAction="#handleLogin" defaultButton="true" GridPane.columnIndex="0" GridPane.rowIndex="3"/>
     <Button fx:id="clearButton" onAction="#handleClear" GridPane.columnIndex="1" GridPane.rowIndex="3"/>
 </GridPane>

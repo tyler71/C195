@@ -23,6 +23,7 @@ public class Appointment {
 
         set_id(customerID);
         setConsultantID(consultantID);
+        setCustomerID(customerID);
         setAppointmentTitle(appointmentTitle);
         setAppointmentDescription(appointmentDescription);
         setAppointmentType(appointmentType);

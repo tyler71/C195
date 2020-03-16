@@ -94,9 +94,9 @@ private static final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofP
             "INSERT INTO %s(%s, %s, %s, " +
                     "%s, %s, %s, " +
                     "%s, %s, %s, %s, " +
-                    "%s, %s, %s" +
-                "VALUES(?, ?, ?, ?, ?, ?," +
-                    "?, ?, NOW(), NOW(), NOW(), ?, ?",
+                    "%s, %s, %s) " +
+                "VALUES(?, ?, ?, ?, ?, ?, " +
+                    "?, ?, ?, ?, NOW(), ?, ?)",
             TABLE_APPOINTMENT, APPOINTMENT_COLUMN_CUSTOMER_ID, APPOINTMENT_COLUMN_USER_ID, APPOINTMENT_COLUMN_TITLE,
             APPOINTMENT_COLUMN_DESCRIPTION, APPOINTMENT_COLUMN_LOCATION, APPOINTMENT_COLUMN_CONTACT,
             APPOINTMENT_COLUMN_TYPE, APPOINTMENT_COLUMN_URL, APPOINTMENT_COLUMN_START, APPOINTMENT_COLUMN_END,
@@ -106,6 +106,8 @@ private static final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofP
 //                            createDate, createdBy, lastUpdateBy)
 //    VALUES(1, 1, 'Hello', 'A description', 'here', 'me',
 //                   'School', 'null', NOW(), NOW(), NOW(), 'me', 'me');
+//                "VALUES(?, ?, ?, ?, ?, ?," +
+//                        "?, ?, NOW(), NOW(), NOW(), ?, ?",
     public static final String DELETE_APPOINTMENT = String.format(
             "DELETE FROM %s WHERE %s = ?",
             TABLE_APPOINTMENT, APPOINTMENT_COLUMN_ID);
@@ -690,6 +692,7 @@ private static final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofP
             insertAppointment.setString(10, appointmentEnd);
             insertAppointment.setString(11, updateBy);
             insertAppointment.setString(12, updateBy);
+            System.out.println("addAppointment " + insertAppointment);
             insertAppointment.executeUpdate();
 
             results = insertAppointment.getGeneratedKeys();

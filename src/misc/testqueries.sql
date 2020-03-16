@@ -58,3 +58,8 @@ DELETE from customer WHERE customerId = 0;
 
 SELECT appointmentId, customerId, userId, title, description, type, start, end, createdBy, lastUpdateBy
 FROM appointment WHERE userId = 1;
+
+INSERT INTO appointment(customerId, userId, title, description, location, contact,
+                        type, url, start, end, createDate, createdBy, lastUpdateBy)
+                        VALUES(1, 1, 'Hello', 'A description', 'here', 'me',
+                               'School', 'null', NOW(), NOW(), NOW(), 'me', 'me');
