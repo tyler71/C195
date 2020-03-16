@@ -54,6 +54,7 @@ public class MainWindow {
 
 
     public void initialize() {
+//        TODO - Completed
 //        Lambda used as only one callable needs to be overriden. runLater prevents this code
 //        from being run until the window (MainWindow) is opened.
         Platform.runLater(() -> {

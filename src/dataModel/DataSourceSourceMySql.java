@@ -916,7 +916,7 @@ public class DataSourceSourceMySql implements IDataSource {
                 .stream()
 //                TODO - Completed
 //                Lambda used to allow the stream to be compared to the consultantID
-//                This allows for efficent filtering. Not using a lambda would result in
+//                This allows for efficient filtering. Not using a lambda would result in
 //                unnecessarily verbose code
                 .filter(c -> (c.getConsultantID()) == consultantID)
                 .forEach(filteredAppointments::add);
