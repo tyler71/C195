@@ -8,6 +8,8 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class CustomerRecords {
 
@@ -90,12 +92,34 @@ public class CustomerRecords {
     private void handleSave() {
         int _id;
         Consultant currentConsultant = DataSource.getDb().getConsultant(LoginWindow.getConsultantID());
-        String customerName = customerNameField.getText();
-        String customerAddressName = customerAddressField.getText();
-        String customerCityName = customerCityField.getText();
-        String customerPostal = customerPostalCode.getText();
-        String customerCountryName = customerCountry.getText();
-        String customerPhoneNumber = customerPhoneNumberField.getText();
+
+        String customerName = customerNameField.getText().trim();
+        String customerAddressName = customerAddressField.getText().trim();
+        String customerCityName = customerCityField.getText().trim();
+        String customerPostal = customerPostalCode.getText().trim();
+        String customerCountryName = customerCountry.getText().trim();
+        String customerPhoneNumber = customerPhoneNumberField.getText().trim();
+
+        List<String> inputFields = Arrays.asList(
+                customerName,
+                customerAddressName,
+                customerCityName,
+                customerPostal,
+                customerCountryName,
+                customerPhoneNumber
+        );
+//        TODO - Completed
+//        Exception controls for invalid or missing customer input
+        for(String field : inputFields) {
+            if(field.isEmpty()) {
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.initOwner(Main.getMainStage());
+                    alert.setTitle("Invalid Input");
+                    alert.setHeaderText("A field was empty or invalid. Save cancelled");
+                alert.showAndWait();
+                throw new NumberFormatException("Invalid or Empty Input");
+            }
+        }
 
         RadioButton selectedRadioButton = (RadioButton) addUpdateToggle.getSelectedToggle();
         String selectedRadio = selectedRadioButton.getId();
