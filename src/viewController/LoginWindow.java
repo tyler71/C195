@@ -2,6 +2,7 @@ package viewController;
 
 // TODO Track user logins if enabled
 
+import dataModel.Appointment;
 import dataModel.Consultant;
 import dataModel.DataSource;
 import javafx.fxml.FXML;
@@ -14,10 +15,8 @@ import javafx.stage.Stage;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.time.Instant;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Locale;
-import java.util.ResourceBundle;
+import java.time.ZonedDateTime;
+import java.util.*;
 import java.util.prefs.Preferences;
 
 public class LoginWindow {
@@ -68,8 +67,23 @@ public class LoginWindow {
         };
 
     @FXML
-    public void checkUpcomingAppointment() {
-//        TODO Complete appointment section first
+    public void checkUpcomingAppointment(int consultantID) {
+        ArrayList<Appointment> consultantAppointments = (ArrayList<Appointment>) DataSource.getDb().getConsultantAppointments(consultantID);
+        ZonedDateTime now = ZonedDateTime.now();
+        for(Appointment a : consultantAppointments) {
+            if(a.getAppointmentStart().isBefore(now.plusMinutes(15)) && a.getAppointmentStart().isAfter(now)) {
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                if (locales.contains(systemLanguage)) {
+                    alert.setTitle(rb.getString("alert_title"));
+                    alert.setHeaderText(rb.getString("upcoming_appointment"));
+                } else {
+                    alert.setTitle(rbDefault.getString("alert_title"));
+                    alert.setHeaderText(rbDefault.getString("upcoming_appointment"));
+                }
+                alert.showAndWait();
+                break;
+            }
+        }
     }
 
     @FXML
@@ -103,7 +117,7 @@ public class LoginWindow {
             logUserLogin(true);
             Consultant retrievedConsultant = DataSource.getDb().searchConsultantName(username);
             consultantID = retrievedConsultant.get_id();
-            checkUpcomingAppointment();
+            checkUpcomingAppointment(consultantID);
         Parent mainRoot = FXMLLoader.load(getClass().getResource("mainWindow.fxml"));
         mainStage.setScene(new Scene(mainRoot, 900, 500));
         } else {
@@ -115,6 +129,7 @@ public class LoginWindow {
     @FXML
     private void showLoginAlert() {
         Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.initOwner(Main.getMainStage());
         if (locales.contains(systemLanguage)) {
             alert.setTitle(rb.getString("alert_title"));
             alert.setHeaderText(rb.getString("invalid_login"));
