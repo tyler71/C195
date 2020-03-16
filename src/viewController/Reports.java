@@ -19,8 +19,7 @@ public class Reports {
 
     @FXML
     public void handleAppointmentTypesMonth() {
-//        TODO  number of appointment types by month
-//        For every month, show how many appointments of each type
+//        TODO Output to TextField and to file
         ArrayList<Appointment> appointments = (ArrayList<Appointment>) DataSource.getDb().getAllAppointments();
         final Map<String, TemporalAdjuster> ADJUSTERS = new HashMap<>();
         ADJUSTERS.put("month", TemporalAdjusters.firstDayOfMonth());
@@ -30,11 +29,15 @@ public class Reports {
                         .with(ADJUSTERS.get("month"))));
 
         for(Map.Entry<LocalDate, List<Appointment>> entry : results.entrySet()) {
-            System.out.println(entry.getKey().getMonth());
-            for(Appointment appt : entry.getValue()) {
-                String.format()
-                System.out.println(appt);
-            }
+            System.out.println(entry.getKey().getMonth() + " " + entry.getKey().getYear());
+                Map<String, List<Appointment>> mapByAppointmentType = entry.getValue().stream()
+                        .collect(Collectors.groupingBy(Appointment::getAppointmentType));
+                for(Map.Entry<String, List<Appointment>> apptTypeCollection : mapByAppointmentType.entrySet()) {
+                    String apptTypeName = apptTypeCollection.getKey();
+                    int count = apptTypeCollection.getValue().size();
+                    System.out.println(apptTypeName + " " + count);
+                }
+            System.out.println();
         }
     }
 
