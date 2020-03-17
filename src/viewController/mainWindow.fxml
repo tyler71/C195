@@ -9,15 +9,15 @@
             prefHeight="400.0" prefWidth="700.0">
     <center>
         <VBox>
-            <TableView fx:id="appointmentView" prefWidth="${appointmentView.width}" onMouseClicked="#handleSelectCustomerRecord">
+            <TableView fx:id="appointmentView" onMouseClicked="#handleSelectCustomerRecord">
                 <columns>
-                    <TableColumn text="Title">
+                    <TableColumn text="Title" prefWidth="100">
                         <cellValueFactory><PropertyValueFactory property="appointmentTitle"/></cellValueFactory>
                     </TableColumn>
-                    <TableColumn text="Type">
+                    <TableColumn text="Type" prefWidth="100">
                         <cellValueFactory><PropertyValueFactory property="appointmentType"/></cellValueFactory>
                     </TableColumn>
-                    <TableColumn text="Date">
+                    <TableColumn text="Date" prefWidth="350">
                         <cellValueFactory><PropertyValueFactory property="appointmentStart"/></cellValueFactory>
                     </TableColumn>
                 </columns>
