@@ -20,6 +20,7 @@ import java.util.*;
 import java.util.prefs.Preferences;
 
 public class LoginWindow {
+    public static final String LOGIN_FILE = "userlogins.txt";
     public final String LOGIN_STRING = "%s | User %s login: %s\n";
     public static final Locale SWAHILI_KENYAN = new Locale("sw", "KE");
     private final ResourceBundle rb = ResourceBundle.getBundle("lan", SWAHILI_KENYAN);
@@ -88,13 +89,12 @@ public class LoginWindow {
 
     @FXML
     public void logUserLogin(boolean validLogin) {
-//        TODO include timestamp
         Preferences prefs = Main.getProgramPrefs();
         boolean loggingEnabled = prefs.getBoolean(Main.LOGIN_ENABLED, false);
         if (loggingEnabled) {
             try {
                 final boolean APPEND = true;
-                FileWriter userLoginFile = new FileWriter("userlogins.txt", APPEND);
+                FileWriter userLoginFile = new FileWriter(LOGIN_FILE, APPEND);
                 if (validLogin) {
                     userLoginFile.append(String.format(LOGIN_STRING, Instant.now() + "[UTC]", usernameValue.getText(), "SUCCESS"));
                 } else {
