@@ -87,7 +87,7 @@
             <right>
                 <HBox spacing="5">
                     <CheckBox text="Enable Logging" fx:id="enableLoggingCheck"/>
-                    <CheckBox text="View by Month" fx:id="calendarMonthViewCheck"/>
+                    <CheckBox text="View by Week/Month" fx:id="calendarMonthViewCheck"/>
                 </HBox>
             </right>
         </BorderPane>

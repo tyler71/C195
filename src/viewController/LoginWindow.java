@@ -120,6 +120,7 @@ public class LoginWindow {
             consultantID = retrievedConsultant.get_id();
             checkUpcomingAppointment(consultantID);
             Parent mainRoot = FXMLLoader.load(getClass().getResource("mainWindow.fxml"));
+            mainStage.setTitle("Appointments");
             mainStage.setScene(new Scene(mainRoot, 900, 500));
         } catch (NumberFormatException e) {
             logUserLogin(false);

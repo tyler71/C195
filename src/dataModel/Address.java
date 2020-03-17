@@ -20,7 +20,8 @@ public class Address {
 
     @Override
     public String toString() {
-        String returnString = address + " " + address2 + "\n" + city.getCityName() + " " + city.getCountry() + " " + postalCode + " " + phone;
+        String returnString = address + " " + address2 + "\n" + city.getCityName() + " "
+                + city.getCountry().getCountryName() + " " + postalCode.getValue() + " " + phone.getValue();
         return returnString;
     }
 

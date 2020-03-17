@@ -138,9 +138,12 @@ public class CustomerRecords {
                 Customer generatedCustomer = new Customer(currentConsultant.getName(), customerName, customerAddressName, "null",
                         customerCityName, customerCountryName, customerPostal, customerPhoneNumber);
                 generatedCustomer.set_id(_id);
-                generatedCustomer.getAddress().set_id(selectedCustomer.getAddress().get_id());
-                generatedCustomer.getAddress().getCity().set_id(selectedCustomer.getAddress().getCity().get_id());
-                generatedCustomer.getAddress().getCity().getCountry().set_id(selectedCustomer.getAddress().getCity().getCountry().get_id());
+                generatedCustomer.getAddress().set_id(
+                        selectedCustomer.getAddress().get_id());
+                generatedCustomer.getAddress().getCity().set_id(
+                        selectedCustomer.getAddress().getCity().get_id());
+                generatedCustomer.getAddress().getCity().getCountry().set_id(
+                        selectedCustomer.getAddress().getCity().getCountry().get_id());
                 DataSource.getDb().updateCustomer(_id, generatedCustomer);
                 int selectedCustomerIndexView = observableCustomerRecords.indexOf(selectedCustomer);
                 observableCustomerRecords.remove(selectedCustomerIndexView);

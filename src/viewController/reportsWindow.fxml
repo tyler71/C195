@@ -14,9 +14,8 @@
     <Label text="Schedule for each consultant" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
     <Button text="Generate" onAction="#handleSchedulesPerConsultant" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
 
-    <Label text="Some other test" GridPane.columnIndex="0" GridPane.rowIndex="2"/>
+    <Label text="Customers per Consultant" GridPane.columnIndex="0" GridPane.rowIndex="2"/>
     <Button text="Generate" onAction="#handleReportCustomersPerConsultant" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
 
     <TextArea fx:id="reportPreviewTextArea" GridPane.columnSpan="2" GridPane.columnIndex="0" GridPane.rowIndex="3"/>
-
 </GridPane>
