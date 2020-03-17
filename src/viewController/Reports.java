@@ -43,6 +43,18 @@ public class Reports {
 
     @FXML
     public void handleSchedulesPerConsultant() {
+        ArrayList<Appointment> appointments = (ArrayList<Appointment>) DataSource.getDb().getAllAppointments();
+        Map<Integer, List<Appointment>> consultantsAppointments = appointments.stream()
+                .collect(Collectors.groupingBy(Appointment::getConsultantID));
+        for(Map.Entry<Integer, List<Appointment>> consultantAppointments : consultantsAppointments.entrySet()) {
+            String consultantName = DataSource.getDb().getConsultant(
+                    consultantAppointments.getKey()).getName();
+            System.out.println(consultantName);
+            for(Appointment appt : consultantAppointments.getValue()) {
+                System.out.println(appt.getAppointmentTitle() + " " + appt.getAppointmentStart());
+            }
+        }
+
 
     }
 
