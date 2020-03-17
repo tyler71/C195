@@ -40,6 +40,8 @@ public class MainWindow {
     @FXML
     private RadioButton businessRadio;
     @FXML
+    private TextField appointmentTitleField;
+    @FXML
     private TextField customerIDField;
     @FXML
     private DatePicker consultantAppointmentDate;
@@ -151,16 +153,17 @@ public class MainWindow {
         private void handleSave () {
             try {
                 int appointmentID;
-                int consultantID = Integer.parseInt(consultantIDField.getText());
-                String appointmentType = ((RadioButton) appointmentTypeToggle.getSelectedToggle()).getText();
-                int customerID = Integer.parseInt(customerIDField.getText());
+                int consultantID = Integer.parseInt(consultantIDField.getText().trim());
+                String appointmentType = ((RadioButton) appointmentTypeToggle.getSelectedToggle()).getText().trim();
+                String appointmentTitle = appointmentTitleField.getText().trim();
+                int customerID = Integer.parseInt(customerIDField.getText().trim());
                 int appointmentYear = consultantAppointmentDate.getValue().getYear();
                 Month appointmentMonth = consultantAppointmentDate.getValue().getMonth();
                 int appointmentDay = consultantAppointmentDate.getValue().getDayOfMonth();
-                int appointmentHour = Integer.parseInt(consultantAppointmentTimeHour.getText());
-                int appointmentMinute = Integer.parseInt(consultantAppointmentTimeMinute.getText());
-                int appointmentDuration = Integer.parseInt(consultantAppointmentDuration.getText());
-                String appointmentDescription = consultantAppointmentDescription.getText();
+                int appointmentHour = Integer.parseInt(consultantAppointmentTimeHour.getText().trim());
+                int appointmentMinute = Integer.parseInt(consultantAppointmentTimeMinute.getText().trim());
+                int appointmentDuration = Integer.parseInt(consultantAppointmentDuration.getText().trim());
+                String appointmentDescription = consultantAppointmentDescription.getText().trim();
                 String lastUpdateBy = DataSource.getDb().getConsultant(LoginWindow.getConsultantID()).getName();
 
                 LocalDateTime parsedLocalDateTime = LocalDateTime.of(appointmentYear, appointmentMonth,
@@ -175,7 +178,7 @@ public class MainWindow {
                 RadioButton selectedAddUpdateRadioButton = (RadioButton) addUpdateToggle.getSelectedToggle();
                 String selectedRadioAddUpdate = selectedAddUpdateRadioButton.getId();
                 if (selectedRadioAddUpdate.equals("radioAddAppointment")) {
-                    Appointment tempAppointment = new Appointment(customerID, consultantID, "null title",
+                    Appointment tempAppointment = new Appointment(customerID, consultantID, appointmentTitle,
                             appointmentDescription, appointmentType, appointmentStart, appointmentStop, lastUpdateBy, lastUpdateBy);
                     appointmentID = DataSource.getDb().addAppointment(tempAppointment);
                     tempAppointment.set_id(appointmentID);
@@ -184,7 +187,7 @@ public class MainWindow {
                 } else if (selectedRadioAddUpdate.equals("radioUpdateAppointment")) {
                     Appointment selectedAppointment = appointmentView.getSelectionModel().getSelectedItem();
                     appointmentID = selectedAppointment.get_id();
-                    Appointment tempAppointment = new Appointment(customerID, consultantID, "null title",
+                    Appointment tempAppointment = new Appointment(customerID, consultantID, appointmentTitle,
                             appointmentDescription, appointmentType, appointmentStart, appointmentStop, lastUpdateBy, lastUpdateBy);
                     tempAppointment.set_id(appointmentID);
                     DataSource.getDb().updateAppointment(appointmentID, tempAppointment);
@@ -232,6 +235,7 @@ public class MainWindow {
 
                 consultantIDField.setText(String.valueOf(retrievedAppointment.getConsultantID()));
                 customerIDField.setText(String.valueOf(retrievedAppointment.getCustomerID()));
+                appointmentTitleField.setText(retrievedAppointment.getAppointmentTitle());
                 consultantAppointmentDate.setValue(retrievedAppointment.getAppointmentStart().toLocalDate());
                 consultantAppointmentTimeHour.setText(String.valueOf(retrievedAppointment.getAppointmentStart().getHour()));
                 consultantAppointmentTimeMinute.setText(String.valueOf(retrievedAppointment.getAppointmentStart().getMinute()));

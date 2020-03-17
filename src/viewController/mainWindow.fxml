@@ -68,6 +68,10 @@ TODO
                 <RadioButton text="Personal" toggleGroup="$appointmentTypeToggle" fx:id="personalRadio" />
             </HBox>
             <HBox>
+                <Label text="Title"/>
+                <TextField fx:id="appointmentTitleField"/>
+            </HBox>
+            <HBox>
                 <Label text="Customer ID"/>
                 <TextField fx:id="customerIDField"/>
             </HBox>
