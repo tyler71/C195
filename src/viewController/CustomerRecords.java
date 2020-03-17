@@ -109,7 +109,8 @@ public class CustomerRecords {
                 customerPhoneNumber
         );
 //        TODO - Completed
-//        Exception controls for invalid or missing customer input
+//          Exception controls for invalid or missing customer input
+//          Uses mechanism of if conditional and throwing a error if it matches
         for(String field : inputFields) {
             if(field.isEmpty()) {
                 Alert alert = new Alert(Alert.AlertType.ERROR);

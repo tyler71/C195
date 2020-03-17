@@ -366,7 +366,6 @@ public class DataSourceSourceMySql implements IDataSource {
         int countryID = -1;
         String updatedBy = customer.getConsultantName();
         ResultSet results;
-//        TODO Query first
         try {
             insertCustomerCountry.setString(1, countryName);
             insertCustomerCountry.setString(2, updatedBy);
@@ -915,9 +914,9 @@ public class DataSourceSourceMySql implements IDataSource {
         allAppointments
                 .stream()
 //                TODO - Completed
-//                Lambda used to allow the stream to be compared to the consultantID
-//                This allows for efficient filtering. Not using a lambda would result in
-//                unnecessarily verbose code
+//                  Lambda used to allow the stream to be compared to the consultantID
+//                  This allows for efficient filtering. Not using a lambda would result in
+//                  unnecessarily verbose code
                 .filter(c -> (c.getConsultantID()) == consultantID)
                 .forEach(filteredAppointments::add);
         return filteredAppointments;

@@ -57,8 +57,8 @@ public class MainWindow {
 
     public void initialize() {
 //        TODO - Completed
-//        Lambda used as only one callable needs to be overriden. runLater prevents this code
-//        from being run until the window (MainWindow) is opened.
+//          Lambda used as only one callable needs to be overriden. runLater prevents this code
+//          from being run until the window (MainWindow) is opened.
         Platform.runLater(() -> {
             boolean loggingEnabled = Main.getProgramPrefs().getBoolean(Main.LOGIN_ENABLED, false);
             boolean monthViewEnabled = Main.getProgramPrefs().getBoolean(Main.MONTH_VIEW_ENABLED, false);

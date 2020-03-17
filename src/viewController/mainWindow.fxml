@@ -1,26 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<!--
-TODO Include TableView Calendar of Appointments
-    Ability to view by Month
-    Ability to view by Week
-    Times should be local to user timezone and daylight savings
-    -->
-
-<!--
-TODO
-    Ability to Add appointment
-    Ability to Update appointment
-    Ability to Delete appointment
-    Include fields for appointmentTime, appointmentType, customerID and consultantID
-    Autogenerate consultantID but allow to modify
-    -->
-
-<!-- TODO Include Dialog for Customer Records-->
-<!-- TODO Include Dialog for Generate Reports-->
-
-<!-- TODO Include Ability to turn on Logging-->
-
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.control.cell.PropertyValueFactory?>

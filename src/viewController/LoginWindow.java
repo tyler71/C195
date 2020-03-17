@@ -1,7 +1,5 @@
 package viewController;
 
-// TODO Track user logins if enabled
-
 import dataModel.Appointment;
 import dataModel.Consultant;
 import dataModel.DataSource;
@@ -49,7 +47,6 @@ public class LoginWindow {
                     "sw"
             );
             systemLanguage = Locale.getDefault().getLanguage();
-//            systemLanguage = "sw";
             if(locales.contains(systemLanguage)) {
                 Main.getMainStage().setTitle(rb.getString("login_title"));
                 usernameLabel.setText(rb.getString("login"));

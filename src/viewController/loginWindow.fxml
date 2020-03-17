@@ -4,13 +4,6 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 
-<!--
-TODO
-    Include fields for Login and Password
-    Show in Swahili or English
-    Show error message if incorrect password
-    -->
-
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.control.PasswordField?>
 <GridPane fx:controller="viewController.LoginWindow"
