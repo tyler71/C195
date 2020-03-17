@@ -109,15 +109,19 @@ public class LoginWindow {
         Stage mainStage = Main.getMainStage();
         String username = usernameValue.getText();
         String password = passwordValue.getText();
-        boolean validLogin = DataSource.getDb().validateLogin(username, password);
-        if(validLogin) {
+//        TODO - Completed
+//          Exception Controls by using try catch mechanism for exception control to validate the login
+        try {
+            boolean validLogin = DataSource.getDb().validateLogin(username, password);
+            if(!validLogin)
+                throw new NumberFormatException("Invalid login");
             logUserLogin(true);
             Consultant retrievedConsultant = DataSource.getDb().searchConsultantName(username);
             consultantID = retrievedConsultant.get_id();
             checkUpcomingAppointment(consultantID);
-        Parent mainRoot = FXMLLoader.load(getClass().getResource("mainWindow.fxml"));
-        mainStage.setScene(new Scene(mainRoot, 900, 500));
-        } else {
+            Parent mainRoot = FXMLLoader.load(getClass().getResource("mainWindow.fxml"));
+            mainStage.setScene(new Scene(mainRoot, 900, 500));
+        } catch (NumberFormatException e) {
             logUserLogin(false);
             showLoginAlert();
         }
