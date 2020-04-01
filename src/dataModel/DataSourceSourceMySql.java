@@ -105,7 +105,7 @@ public class DataSourceSourceMySql implements IDataSource {
             "UPDATE %s SET %s = ?, %s = ?, %s = ?, " +
                     "%s = ?, %s = ?, %s = ?, " +
                     "%s = ?, %s = ?, %s = ?, " +
-                    "%s = ?, %s = ?" +
+                    "%s = ?, %s = ? " +
                     "WHERE %s = ?",
             TABLE_APPOINTMENT, APPOINTMENT_COLUMN_CUSTOMER_ID, APPOINTMENT_COLUMN_USER_ID, APPOINTMENT_COLUMN_TITLE,
             APPOINTMENT_COLUMN_DESCRIPTION, APPOINTMENT_COLUMN_LOCATION, APPOINTMENT_COLUMN_CONTACT,
@@ -733,7 +733,7 @@ public class DataSourceSourceMySql implements IDataSource {
     public boolean updateAppointment(int appointmentID, Appointment appointment) {
         Appointment a = appointment;
         int customerId = a.getCustomerID();
-        int userId = a.getCustomerID();
+        int userId = a.getConsultantID();
         String title = a.getAppointmentTitle();
         String description = a.getAppointmentDescription();
         String location = "not set";
@@ -761,6 +761,7 @@ public class DataSourceSourceMySql implements IDataSource {
             updateAppointment.setString(10, end);
             updateAppointment.setString(11, lastUpdateBy);
             updateAppointment.setInt(12, appointmentID);
+            System.out.println("Update Appointment " + updateAppointment);
             affectedRecords = updateAppointment.executeUpdate();
             if(affectedRecords > 1) {
                 throw new SQLException("More then one appointment updated, reverting");
