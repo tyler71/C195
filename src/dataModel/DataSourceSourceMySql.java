@@ -14,9 +14,9 @@ import java.util.Arrays;
 import java.util.List;
 
 public class DataSourceSourceMySql implements IDataSource {
-    public static final String CONNECTION_STRING = "jdbc:mysql://localhost:3306/C195";
-    private static final String CONNECTION_USERNAME = "C195";
-    private static final String CONNECTION_PASSWORD = "3O316HGTm9EO1oKW";
+    public static final String CONNECTION_STRING = "jdbc:mysql://3.227.166.251:3306/U05Tz2";
+    private static final String CONNECTION_USERNAME = "U05Tz2";
+    private static final String CONNECTION_PASSWORD = "53688602434";
 
     private static final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.S");
 
