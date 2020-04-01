@@ -13,6 +13,9 @@
         <VBox>
             <TableView fx:id="customerRecordsView" onMouseClicked="#handleSelectCustomerRecord">
                 <columns>
+                    <TableColumn text="ID" prefWidth="30">
+                        <cellValueFactory><PropertyValueFactory property="_id"/></cellValueFactory>
+                    </TableColumn>
                     <TableColumn text="Name">
                         <cellValueFactory><PropertyValueFactory property="name"/></cellValueFactory>
                     </TableColumn>
