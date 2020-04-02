@@ -185,13 +185,13 @@ public class MainWindow {
 
             if (!isInBusinessHours(tempAppointment))
                 throw new NumberFormatException("Appointment not in business hours!");
-            if (isOverlappedAppointment(tempAppointment))
-                throw new NumberFormatException("This is a overlapping appointment!");
 
             RadioButton selectedAddUpdateRadioButton = (RadioButton) addUpdateToggle.getSelectedToggle();
             String selectedRadioAddUpdate = selectedAddUpdateRadioButton.getId();
 
             if (selectedRadioAddUpdate.equals("radioAddAppointment")) {
+                if (isOverlappedAppointment(tempAppointment))
+                    throw new NumberFormatException("This is a overlapping appointment!");
                 appointmentID = DataSource.getDb().addAppointment(tempAppointment);
                 tempAppointment.set_id(appointmentID);
 
@@ -200,6 +200,8 @@ public class MainWindow {
                 Appointment selectedAppointment = appointmentView.getSelectionModel().getSelectedItem();
                 appointmentID = selectedAppointment.get_id();
                 tempAppointment.set_id(appointmentID);
+                if (isOverlappedAppointment(tempAppointment, true))
+                    throw new NumberFormatException("This is a overlapping appointment!");
                 DataSource.getDb().updateAppointment(appointmentID, tempAppointment);
 
                 int selectedAppointmentLocation = observableAppointments.indexOf(selectedAppointment);
@@ -236,19 +238,30 @@ public class MainWindow {
 
     //    TODO - Completed
 //          Validate Appointment is not overlapping other appointments
-    private boolean isOverlappedAppointment(Appointment appt) {
+    private boolean isOverlappedAppointment(Appointment appt, boolean updatingRecord) {
         List<Appointment> consultantAppointments = DataSource.getDb().getConsultantAppointments(LoginWindow.getConsultantID());
-        for (Appointment currentAppts : consultantAppointments) {
-            if (appt.getAppointmentStart().isBefore(currentAppts.getAppointmentEnd())
-                    && currentAppts.getAppointmentStart().isBefore(appt.getAppointmentEnd())) {
-//                Do our best to see if appointment is the same
-                return appt.getConsultantID() != currentAppts.getConsultantID()
-                        || !appt.getAppointmentTitle().equals(currentAppts.getAppointmentTitle())
-                        || !appt.getAppointmentDescription().equals(currentAppts.getAppointmentDescription())
-                        || !appt.getAppointmentType().equals(currentAppts.getAppointmentType());
+        if(updatingRecord) {
+            for (Appointment currentAppt : consultantAppointments) {
+                if(appt.get_id() == currentAppt.get_id())
+                    continue;
+                if (appt.getAppointmentStart().isBefore(currentAppt.getAppointmentEnd())
+                        && currentAppt.getAppointmentStart().isBefore(appt.getAppointmentEnd())) {
+                    return true;
+                }
+            }
+            return false;
+        } else {
+            for (Appointment currentAppt : consultantAppointments) {
+                if (appt.getAppointmentStart().isBefore(currentAppt.getAppointmentEnd())
+                        && currentAppt.getAppointmentStart().isBefore(appt.getAppointmentEnd())) {
+                    return true;
+                }
             }
         }
         return false;
+    }
+    private boolean isOverlappedAppointment(Appointment appt) {
+        return isOverlappedAppointment(appt, false);
     }
 
     @FXML

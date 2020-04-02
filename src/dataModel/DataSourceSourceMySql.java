@@ -712,7 +712,6 @@ public class DataSourceSourceMySql implements IDataSource {
             insertAppointment.setString(10, appointmentEnd);
             insertAppointment.setString(11, updateBy);
             insertAppointment.setString(12, updateBy);
-            System.out.println("addAppointment " + insertAppointment);
             insertAppointment.executeUpdate();
 
             results = insertAppointment.getGeneratedKeys();
