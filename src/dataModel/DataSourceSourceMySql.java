@@ -513,7 +513,14 @@ public class DataSourceSourceMySql implements IDataSource {
             affectedRecords = updateCustomerAddress.executeUpdate();
             if (affectedRecords != 1)
                 throw new SQLException("More then one record affected");
-
+            updateCustomer.setString(1, customer.getName());
+            updateCustomer.setInt(2, customer.getAddress().get_id());
+            updateCustomer.setInt(3, 1); // We don't set active
+            updateCustomer.setString(4, updatedBy);
+            updateCustomer.setInt(5, customer.get_id());
+            affectedRecords = updateCustomer.executeUpdate();
+            if (affectedRecords != 1)
+                throw new SQLException("More then one record affected");
         } catch (SQLException e) {
             try {
                 System.out.println("Rolling back");
@@ -761,7 +768,6 @@ public class DataSourceSourceMySql implements IDataSource {
             updateAppointment.setString(10, end);
             updateAppointment.setString(11, lastUpdateBy);
             updateAppointment.setInt(12, appointmentID);
-            System.out.println("Update Appointment " + updateAppointment);
             affectedRecords = updateAppointment.executeUpdate();
             if(affectedRecords > 1) {
                 throw new SQLException("More then one appointment updated, reverting");
