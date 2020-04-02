@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.List;
 
 public class MainWindow {
     private ObservableList<Appointment> observableAppointments = FXCollections.observableList(new ArrayList<>());
@@ -179,9 +180,10 @@ public class MainWindow {
                     .plusMinutes(appointmentDuration)
                     .atZone(ZoneOffset.systemDefault());
 
-            if(! isInBusinessHours(appointmentStart, appointmentStop)) {
+            if(! isInBusinessHours(appointmentStart, appointmentStop))
                 throw new NumberFormatException("Appointment not in business hours!");
-            }
+            if(isOverlappedAppointment(appointmentStart, appointmentStop))
+                throw new NumberFormatException("This is a overlapping appointment!");
 
             RadioButton selectedAddUpdateRadioButton = (RadioButton) addUpdateToggle.getSelectedToggle();
             String selectedRadioAddUpdate = selectedAddUpdateRadioButton.getId();
@@ -222,6 +224,18 @@ public class MainWindow {
 
         return ZONED_LOCAL_BUSINESS_OPEN.getHour() < apptStart.getHour()
                 && ZONED_LOCAL_BUSINESS_CLOSED.getHour() > apptEnd.getHour();
+    }
+//    TODO - Completed
+//      Validate Appointment is not overlapping other appointments
+    private boolean isOverlappedAppointment(ZonedDateTime apptStart, ZonedDateTime apptEnd) {
+        List<Appointment> consultantAppointments = DataSource.getDb().getConsultantAppointments(LoginWindow.getConsultantID());
+        for(Appointment currentAppts : consultantAppointments) {
+            if(apptStart.isBefore(currentAppts.getAppointmentEnd())
+                    && currentAppts.getAppointmentStart().isBefore(apptEnd)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     @FXML
