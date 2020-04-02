@@ -228,12 +228,23 @@ public class MainWindow {
                 .atOffset(BUSINESS_TIME_ZONE.getRules().getOffset(LocalDateTime.now()))
                 .atZoneSameInstant(ZoneOffset.UTC);
 
-        return UTC_LOCAL_BUSINESS_OPEN.getHour() <= appt.getAppointmentEnd()
-                .withZoneSameInstant(ZoneOffset.UTC)
-                .getHour()
-                && UTC_LOCAL_BUSINESS_CLOSED.getHour() > appt.getAppointmentEnd()
-                .withZoneSameInstant(ZoneOffset.UTC)
-                .getHour();
+        return (
+                    (
+                        UTC_LOCAL_BUSINESS_OPEN.getHour() <= appt.getAppointmentEnd()
+                            .withZoneSameInstant(ZoneOffset.UTC)
+                            .getHour()
+                        && UTC_LOCAL_BUSINESS_CLOSED.getHour() > appt.getAppointmentEnd()
+                            .withZoneSameInstant(ZoneOffset.UTC)
+                            .getHour()
+                    )
+                    && (
+                        UTC_LOCAL_BUSINESS_OPEN.getHour() <= appt.getAppointmentStart()
+                            .withZoneSameInstant(ZoneOffset.UTC)
+                            .getHour()
+                        && UTC_LOCAL_BUSINESS_CLOSED.getHour() > appt.getAppointmentEnd()
+                            .withZoneSameInstant(ZoneOffset.UTC)
+                            .getHour()
+                    ));
     }
 
     //    TODO - Completed
