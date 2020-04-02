@@ -180,16 +180,18 @@ public class MainWindow {
                     .plusMinutes(appointmentDuration)
                     .atZone(ZoneOffset.systemDefault());
 
-            if(! isInBusinessHours(appointmentStart, appointmentStop))
+            Appointment tempAppointment = new Appointment(customerID, consultantID, appointmentTitle,
+                    appointmentDescription, appointmentType, appointmentStart, appointmentStop, lastUpdateBy, lastUpdateBy);
+
+            if (!isInBusinessHours(tempAppointment))
                 throw new NumberFormatException("Appointment not in business hours!");
-            if(isOverlappedAppointment(appointmentStart, appointmentStop))
+            if (isOverlappedAppointment(tempAppointment))
                 throw new NumberFormatException("This is a overlapping appointment!");
 
             RadioButton selectedAddUpdateRadioButton = (RadioButton) addUpdateToggle.getSelectedToggle();
             String selectedRadioAddUpdate = selectedAddUpdateRadioButton.getId();
+
             if (selectedRadioAddUpdate.equals("radioAddAppointment")) {
-                Appointment tempAppointment = new Appointment(customerID, consultantID, appointmentTitle,
-                        appointmentDescription, appointmentType, appointmentStart, appointmentStop, lastUpdateBy, lastUpdateBy);
                 appointmentID = DataSource.getDb().addAppointment(tempAppointment);
                 tempAppointment.set_id(appointmentID);
 
@@ -197,8 +199,6 @@ public class MainWindow {
             } else if (selectedRadioAddUpdate.equals("radioUpdateAppointment")) {
                 Appointment selectedAppointment = appointmentView.getSelectionModel().getSelectedItem();
                 appointmentID = selectedAppointment.get_id();
-                Appointment tempAppointment = new Appointment(customerID, consultantID, appointmentTitle,
-                        appointmentDescription, appointmentType, appointmentStart, appointmentStop, lastUpdateBy, lastUpdateBy);
                 tempAppointment.set_id(appointmentID);
                 DataSource.getDb().updateAppointment(appointmentID, tempAppointment);
 
@@ -213,26 +213,39 @@ public class MainWindow {
         }
     }
 
-//    TODO - Completed
-//      Validate is within business hours
-    private boolean isInBusinessHours(ZonedDateTime apptStart, ZonedDateTime apptEnd) {
+    //    TODO - Completed
+//          Validate is within business hours
+    private boolean isInBusinessHours(Appointment appt) {
         String BUSINESS_OPEN = String.format("2005-05-15 %s:00", LOCAL_BUSINESS_OPEN);
         String BUSINESS_CLOSED = String.format("2005-05-15 %s:00", LOCAL_BUSINESS_CLOSED);
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-        ZonedDateTime ZONED_LOCAL_BUSINESS_CLOSED = LocalDateTime.parse(BUSINESS_CLOSED, formatter).atZone(BUSINESS_TIME_ZONE);
-        ZonedDateTime ZONED_LOCAL_BUSINESS_OPEN = LocalDateTime.parse(BUSINESS_OPEN, formatter).atZone(BUSINESS_TIME_ZONE);
+        ZonedDateTime UTC_LOCAL_BUSINESS_CLOSED = LocalDateTime.parse(BUSINESS_CLOSED, formatter)
+                .atOffset(BUSINESS_TIME_ZONE.getRules().getOffset(LocalDateTime.now()))
+                .atZoneSameInstant(ZoneOffset.UTC);
+        ZonedDateTime UTC_LOCAL_BUSINESS_OPEN = LocalDateTime.parse(BUSINESS_OPEN, formatter)
+                .atOffset(BUSINESS_TIME_ZONE.getRules().getOffset(LocalDateTime.now()))
+                .atZoneSameInstant(ZoneOffset.UTC);
 
-        return ZONED_LOCAL_BUSINESS_OPEN.getHour() < apptStart.getHour()
-                && ZONED_LOCAL_BUSINESS_CLOSED.getHour() > apptEnd.getHour();
+        return UTC_LOCAL_BUSINESS_OPEN.getHour() <= appt.getAppointmentEnd()
+                .withZoneSameInstant(ZoneOffset.UTC)
+                .getHour()
+                && UTC_LOCAL_BUSINESS_CLOSED.getHour() > appt.getAppointmentEnd()
+                .withZoneSameInstant(ZoneOffset.UTC)
+                .getHour();
     }
-//    TODO - Completed
-//      Validate Appointment is not overlapping other appointments
-    private boolean isOverlappedAppointment(ZonedDateTime apptStart, ZonedDateTime apptEnd) {
+
+    //    TODO - Completed
+//          Validate Appointment is not overlapping other appointments
+    private boolean isOverlappedAppointment(Appointment appt) {
         List<Appointment> consultantAppointments = DataSource.getDb().getConsultantAppointments(LoginWindow.getConsultantID());
-        for(Appointment currentAppts : consultantAppointments) {
-            if(apptStart.isBefore(currentAppts.getAppointmentEnd())
-                    && currentAppts.getAppointmentStart().isBefore(apptEnd)) {
-                return true;
+        for (Appointment currentAppts : consultantAppointments) {
+            if (appt.getAppointmentStart().isBefore(currentAppts.getAppointmentEnd())
+                    && currentAppts.getAppointmentStart().isBefore(appt.getAppointmentEnd())) {
+//                Do our best to see if appointment is the same
+                return appt.getConsultantID() != currentAppts.getConsultantID()
+                        || !appt.getAppointmentTitle().equals(currentAppts.getAppointmentTitle())
+                        || !appt.getAppointmentDescription().equals(currentAppts.getAppointmentDescription())
+                        || !appt.getAppointmentType().equals(currentAppts.getAppointmentType());
             }
         }
         return false;
