@@ -13,10 +13,16 @@ import javafx.scene.layout.BorderPane;
 
 import java.io.IOException;
 import java.time.*;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
 public class MainWindow {
     private ObservableList<Appointment> observableAppointments = FXCollections.observableList(new ArrayList<>());
+
+    public static final ZoneId BUSINESS_TIME_ZONE = ZoneId.of("America/Los_Angeles");
+    public static final String LOCAL_BUSINESS_OPEN = "08";
+    public static final String LOCAL_BUSINESS_CLOSED = "16";
+
 
     @FXML
     private TableView<Appointment> appointmentView;
@@ -65,7 +71,6 @@ public class MainWindow {
 
             int consultant_id = LoginWindow.getConsultantID();
             IDataSource db = DataSource.getDb();
-            ArrayList<Appointment> filteredConsultantAppointments = new ArrayList<>();
             try {
                 if (monthViewEnabled) {
                     observableAppointments.addAll(filterAppointments(true, (ArrayList<Appointment>) db.getConsultantAppointments(consultant_id)));
@@ -174,6 +179,9 @@ public class MainWindow {
                     .plusMinutes(appointmentDuration)
                     .atZone(ZoneOffset.systemDefault());
 
+            if(! isInBusinessHours(appointmentStart, appointmentStop)) {
+                throw new NumberFormatException("Appointment not in business hours!");
+            }
 
             RadioButton selectedAddUpdateRadioButton = (RadioButton) addUpdateToggle.getSelectedToggle();
             String selectedRadioAddUpdate = selectedAddUpdateRadioButton.getId();
@@ -199,10 +207,21 @@ public class MainWindow {
             }
         } catch (NumberFormatException e) {
             System.out.println("Invalid input");
+            System.out.println(e.getMessage());
         }
     }
 
-    private boolean isInBusinessHours(ZonedDateTime start, ZonedDateTime end) {
+//    TODO - Completed
+//      Validate is within business hours
+    private boolean isInBusinessHours(ZonedDateTime apptStart, ZonedDateTime apptEnd) {
+        String BUSINESS_OPEN = String.format("2005-05-15 %s:00", LOCAL_BUSINESS_OPEN);
+        String BUSINESS_CLOSED = String.format("2005-05-15 %s:00", LOCAL_BUSINESS_CLOSED);
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+        ZonedDateTime ZONED_LOCAL_BUSINESS_CLOSED = LocalDateTime.parse(BUSINESS_CLOSED, formatter).atZone(BUSINESS_TIME_ZONE);
+        ZonedDateTime ZONED_LOCAL_BUSINESS_OPEN = LocalDateTime.parse(BUSINESS_OPEN, formatter).atZone(BUSINESS_TIME_ZONE);
+
+        return ZONED_LOCAL_BUSINESS_OPEN.getHour() < apptStart.getHour()
+                && ZONED_LOCAL_BUSINESS_CLOSED.getHour() > apptEnd.getHour();
     }
 
     @FXML
