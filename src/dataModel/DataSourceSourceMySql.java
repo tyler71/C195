@@ -14,7 +14,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public class DataSourceSourceMySql implements IDataSource {
-    public static final String CONNECTION_STRING = "jdbc:mysql://3.227.166.251:3306/U05Tz2";
+    public static final String CONNECTION_STRING = "jdbc:mysql://wgudb.ucertify.com:3306/U05Tz2";
     private static final String CONNECTION_USERNAME = "U05Tz2";
     private static final String CONNECTION_PASSWORD = "53688602434";
 
@@ -768,7 +768,7 @@ public class DataSourceSourceMySql implements IDataSource {
             updateAppointment.setString(11, lastUpdateBy);
             updateAppointment.setInt(12, appointmentID);
             affectedRecords = updateAppointment.executeUpdate();
-            if(affectedRecords > 1) {
+            if (affectedRecords > 1) {
                 throw new SQLException("More then one appointment updated, reverting");
             }
         } catch (SQLException e) {
@@ -786,7 +786,7 @@ public class DataSourceSourceMySql implements IDataSource {
                 e.printStackTrace();
             }
         }
-    return false;
+        return false;
     }
 
     @Override
